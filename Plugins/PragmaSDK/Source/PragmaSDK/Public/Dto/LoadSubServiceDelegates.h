@@ -1,0 +1,24 @@
+#pragma once
+
+/* This file was auto-generated, and should not be manually edited. See pragma.playerdata.codegen.generators.SubServiceUnrealGenerator */
+
+#include "Delegates/Delegate.h"
+#include "Misc/Optional.h"
+
+#if ENGINE_MAJOR_VERSION < 5 || ENGINE_MINOR_VERSION < 2
+#define NullOpt {}
+#endif
+
+struct FPragma_PlayerData_BigDataResponseProto;
+struct FPragma_PlayerData_ContentDrivenGrantsResponseProto;
+struct FPragma_PlayerData_EmptyOperationResponseProto;
+struct FPragma_PlayerData_GrantStarterItemsResponseProto;
+struct FPragma_PlayerData_LoadTestEntityTransformResponseProto;
+struct FPragma_PlayerData_ManyComponentResponseProto;
+
+DECLARE_DELEGATE_OneParam(FOnLoadBigDataEntityDelegate, TOptional<FPragma_PlayerData_BigDataResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnLoadContentDrivenGrantsDelegate, TOptional<FPragma_PlayerData_ContentDrivenGrantsResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnLoadEmptyOperationDelegate, TOptional<FPragma_PlayerData_EmptyOperationResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnLoadGrantStarterItemsDelegate, TOptional<FPragma_PlayerData_GrantStarterItemsResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnLoadLoadTestEntityTransformDelegate, TOptional<FPragma_PlayerData_LoadTestEntityTransformResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnLoadManyComponentEntityDelegate, TOptional<FPragma_PlayerData_ManyComponentResponseProto>);

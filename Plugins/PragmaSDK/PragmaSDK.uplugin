@@ -1,0 +1,29 @@
+{
+    "FileVersion": 3,
+    "Version": 1,
+    "VersionName": "1.0",
+    "FriendlyName": "PragmaSDK",
+    "Description": "",
+    "Category": "Other",
+    "CreatedBy": "Pragma Platform Inc.",
+    "CreatedByURL": "https://pragma.gg",
+    "DocsURL": "https://pragma.gg/docs",
+    "MarketplaceURL": "",
+    "SupportURL": "",
+    "CanContainContent": false,
+    "IsBetaVersion": true,
+    "Installed": false,
+    "Modules": [
+        {
+            "Name": "PragmaSDK",
+            "Type": "Runtime",
+            "LoadingPhase": "Default"
+        },
+        {
+            "Name": "PragmaSDKAux",
+            "Type": "Runtime",
+            "LoadingPhase": "Default",
+            "Description": "Auxiliary code that depends on the Unreal 'Engine' module."
+        }
+    ]
+}

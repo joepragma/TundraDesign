@@ -1,0 +1,28 @@
+#pragma once
+
+/* This file was auto-generated, and should not be manually edited. See pragma.playerdata.codegen.generators.SubServiceUnrealGenerator */
+
+#include "Delegates/Delegate.h"
+#include "Misc/Optional.h"
+
+#if ENGINE_MAJOR_VERSION < 5 || ENGINE_MINOR_VERSION < 2
+#define NullOpt {}
+#endif
+
+struct FPragma_PlayerData_AddNumberResponseProto;
+struct FPragma_PlayerData_AddNumberTimesTwoResponseProto;
+struct FPragma_PlayerData_DeleteNumberDataResponseProto;
+struct FPragma_PlayerData_EchoResponseProto;
+struct FPragma_PlayerData_EchoComplexResponseProto;
+struct FPragma_PlayerData_EchoListResponseProto;
+struct FPragma_PlayerData_PlayerHiddenComponentResponseProto;
+struct FPragma_PlayerData_SendEmptyPayloadResponseProto;
+
+DECLARE_DELEGATE_OneParam(FOnDemoAddNumberDelegate, TOptional<FPragma_PlayerData_AddNumberResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnDemoAddNumberTimesTwoDelegate, TOptional<FPragma_PlayerData_AddNumberTimesTwoResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnDemoDeleteNumberDataDelegate, TOptional<FPragma_PlayerData_DeleteNumberDataResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnDemoEchoDelegate, TOptional<FPragma_PlayerData_EchoResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnDemoEchoComplexDelegate, TOptional<FPragma_PlayerData_EchoComplexResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnDemoEchoListDelegate, TOptional<FPragma_PlayerData_EchoListResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnDemoHideStuffFromPlayerDelegate, TOptional<FPragma_PlayerData_PlayerHiddenComponentResponseProto>);
+DECLARE_DELEGATE_OneParam(FOnDemoSendEmptyPayloadDelegate, TOptional<FPragma_PlayerData_SendEmptyPayloadResponseProto>);
