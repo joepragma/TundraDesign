@@ -15,6 +15,10 @@ class FPragmaDebugServer;
 class FPragmaBackendTypeConverter;
 class IPragmaTimerManager;
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 UCLASS(Transient)
 class PRAGMASDK_API UPragmaConnection : public UObject
 {
@@ -159,10 +163,12 @@ protected:
 
 	void SetStatusForTest(EStatus InStatus) { Status = InStatus;}
 
-
 private:
 	// Disconnect and broadcast OnDisconnected with a connection error.
 	virtual void FinalizeDisconnect(TOptional<FPragmaConnectionError> Error);
+
+	void StubbedUpdateBackendConfig();
+	void StubbedConnect();
 
 	// Once all initialization requests have finished successfully, we can finish init.
 	void TryFinishInit();

@@ -11,9 +11,12 @@ class IPragmaTimerManager;
 
 PRAGMA_PTR_API(FSession);
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 namespace Pragma
 {
-
 /**
  * Base type for Pragma Session objects. Create different session types via the Runtime.
  */
@@ -57,7 +60,6 @@ public:
 	// All connections have recovered and the Session is considered fully connected.
 	FConnectionEvent OnReconnected;
 
-
 	DECLARE_EVENT_OneParam(FSession, FBackendConnectionEvent, EPragmaConnectionStatus);
 
 	// The status of the connection to the Social backend changed. May be fired in addition to the other connection events.
@@ -71,6 +73,7 @@ public:
 
 	DECLARE_EVENT(FSession, FInitializedEvent);
 	FInitializedEvent OnInitialized;
+
 	virtual bool IsInitialized() const;
 
 	virtual bool IsPartnerSession() const = 0;
@@ -79,7 +82,6 @@ protected:
 	// This only exists because legacy session/connection doesn't play nice w/ changing SdkConfig after its initialized.
 	void InitLegacySession();
 	virtual void OnInitLegacy() {}
-
 
 	DECLARE_DELEGATE(FPreLogInDelegate);
 

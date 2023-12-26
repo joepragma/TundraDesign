@@ -3,6 +3,10 @@
 #include "PragmaConnection.h"
 #include "PragmaWebSocket.h"
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 namespace Pragma
 {
 

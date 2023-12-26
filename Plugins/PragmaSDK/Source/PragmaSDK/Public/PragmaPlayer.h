@@ -7,15 +7,17 @@
 #include "Services/PragmaInventoryService.h"
 #include "Pragma/Api/Player/PragmaGameLoopApi.h"
 #include "PragmaApiProvider.h"
-#include "PragmaConnectionError.h"
 #include "PragmaJwt.h"
 #include "PragmaPlayerApi.h"
-#include "HttpDto/PragmaAuthenticateDto.h"
 #include "Pragma/Api/Player/PragmaFriendApi.h"
 #include "Pragma/Api/Player/PragmaPresenceApi.h"
 #include "Services/PragmaPlayerDataService.h"
 
 PRAGMA_PTR_API(FPlayer);
+
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
 
 namespace Pragma
 {
@@ -98,12 +100,10 @@ public:
 
 	// Fired upon login queue updates.
 	DECLARE_EVENT_OneParam(UPragmaAccountService, FLoginQueueUpdateEvent, FQueueUpdateData /* Eta, PositionInQueue */);
-
 	FLoginQueueUpdateEvent OnLoginQueueUpdate;
 
 	// Fired when a token successfully refreshes.
 	DECLARE_EVENT_TwoParams(UPragmaAccountService, FTokensEvent, FString /*PragmaSocialToken*/, FString /*PragmaGameToken*/);
-
 	FTokensEvent OnTokenRefreshCompleted;
 
 	virtual bool IsPartnerSession() const override { return false; }
@@ -123,53 +123,16 @@ protected:
 
 	virtual TSharedPtr<FSession, SpMode> AsSharedSession() override { return AsShared(); }
 
+	virtual void InitApi(UClass* StaticClass) override;
 	virtual FSessionMap& Apis() override { return PlayerApis; }
 	virtual const FSessionMap& Apis() const override { return PlayerApis; }
-
-	virtual void InitApi(UClass* StaticClass) override;
-
-	DECLARE_DELEGATE(FRefreshTokenFunc);
 
 	void InitializeServices();
 	void RegisterDefaultApis();
 	void InitDefaultApis();
 
-	virtual void LegacyLogIn(const EPragma_Account_IdProvider ProviderId, const FString& ProviderToken, const FLoggedInDelegate& OnComplete);
-	virtual void LegacyLogIn(const EPragma_Account_ExtIdProvider ProviderId, const FString& ProviderToken, const FLoggedInDelegate& OnComplete);
-	virtual void LegacyLogInProvider(const FString& ProviderId, const FString& ProviderToken, const FLoggedInDelegate& OnComplete);
-	virtual void LegacyLogIn(FString InPragmaSocialToken, FString InPragmaGameToken, const FLoggedInDelegate& OnComplete);
-
-	virtual void LegacyAuthenticate(FPragma_Account_AuthenticateOrCreateV2Request Request, const FLoggedInDelegate& OnComplete);
-	void CheckTicket(
-		const bool IsAllowedIn,
-		const FString& TicketToken,
-		const int NextPollDuration,
-		const FString& Eta,
-		const int32 PositionInQueue,
-		const FString& ProviderId,
-		const FString& ProviderToken,
-		const FLoggedInDelegate& OnComplete
-	);
-	void CheckTicketRequest(
-		const FString& TicketToken,
-		const FString& ProviderId,
-		const FString& ProviderToken,
-		const FLoggedInDelegate& OnComplete
-	);
-
-	virtual void Connect(const bool bRefreshImmediately, const FLoggedInDelegate& OnComplete);
-	virtual void SetPragmaSocialToken(FString InPragmaSocialToken);
-	virtual void SetPragmaGameToken(FString InPragmaGameToken);
-	float GetInitialRefreshDelayInSeconds(const bool bRefreshImmediately) const;
-	virtual void CreateRefreshLoop(const bool bRefreshImmediately);
-	TOptional<FPragmaConnectionError> ValidateTokens();
-	void RefreshSession();
-
-	// Retry loop counter for refreshing tokens
-	int RefreshFailCount{0};
-
-	FPragmaTimerHandle RefreshTokenHandle;
-	FPragmaTimerHandle CheckTicketHandle;
+	void StubbedLogin(const FLoggedInDelegate& OnComplete);
+	void StubbedLogout(const FLoggedOutDelegate& OnComplete);
 
 	FSessionMap PlayerApis;
 

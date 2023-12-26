@@ -12,6 +12,10 @@
 #include "Debug/PragmaActiveDebugServer.h"
 #endif
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 namespace
 {
 FString BuildBaseUrl(const FPragmaBackendInfo& Info, const EPragmaProtocolType Protocol)
@@ -177,12 +181,6 @@ void UPragmaConnection::Init(UPragmaSdkConfig* InSdkConfig, const TSharedPtr<IPr
 
 	// Try pulling backend address from config.
 	const FString& HttpAddress = SdkConfig->GetBackendAddress(bIsPartnerSession);
-	if (HttpAddress.IsEmpty())
-	{
-		PRAGMA_LOG(Warning, "UPragmaConnection::Init -- No BackendAddress found in configuration or command line."
-			" This is ok for development as long as you manually set the BackendAddress using SetBackendAddress()");
-		return;
-	}
 	SetBackendAddress(HttpAddress);
 
 	InitResult = TPragmaResult<>::Success();
@@ -231,12 +229,7 @@ void UPragmaConnection::UpdateBackendConfig(const TFunction<void(TPragmaResult<>
 		OnComplete(FPragmaError{EPragma_SdkError::InvalidConnectionState});
 		return;
 	}
-	if (Status >= EStatus::Initialized)
-	{
-		// Must always refresh v1 types in case platform restarted.
-		RefreshV1Types(OnComplete);
-		return;
-	}
+
 	// Collect inbound fns in a delegate so we can broadcast to multiple, e.g. if this is called multiple times
 	// in a row they should all get the result from the in-progress call.
 	OnBackendConfigComplete.AddWeakLambda(this, OnComplete);
@@ -256,80 +249,19 @@ void UPragmaConnection::UpdateBackendConfig(const TFunction<void(TPragmaResult<>
 	InitializerHttp->Init(BackendAddress, FString{});
 	InitializerHttp->SetDebugServer(DebugServer);
 
-	// Get backend info to construct correct Social/Game backend urls.
-	InitializerHttp->HttpGet<FPragmaInfoV1Response>(TEXT("/v1/info"),
-		[this](TPragmaResult<FPragmaInfoV1Response> Result)
-		{
-			if (Status != EStatus::RequestedBackendConfig)
-			{
-				// Other call probably failed and changed state already.
-				return;
-			}
-			if (Result.IsFailure())
-			{
-				PRAGMA_LOG(Error,
-					"UPragmaConnection::UpdateBackendConfig -- Failed to retrieve backend info. Will be unable to"
-					" connect to Pragma backend. Check to make sure the PragmaBackendAddress provided is correct!");
-				Status = EStatus::ReadyForBackendConfig;
-				InfoInitConfigState = EInitConfigState::Error;
-				InitResult = TPragmaResult<>::Failure(Result.Error());
-				TryFinishInit();
-				return;
-			}
-			FPragmaInfoV1Response& Response = Result.Payload();
-			PRAGMA_LOG(Log, "Received Pragma Backend Info. Name: %s, version: %s.", *Response.Name, *Response.Version);
+	StubbedUpdateBackendConfig();
+}
 
-			ApplyBackendInfoOverrides(Config(), EPragmaBackendType::Social, Response.SocialBackend);
-			ApplyBackendInfoOverrides(Config(), EPragmaBackendType::Game, Response.GameBackend);
+void UPragmaConnection::StubbedUpdateBackendConfig()
+{
+	// BackendTypeConverter->LoadBackendIds(); -- O.o
+	GameShardId = "FakeGameShardId";
 
-			SocialHttp->Init(
-				BuildBaseUrl(Response.SocialBackend, EPragmaProtocolType::Http),
-				BuildApiUrl(Response.SocialBackend, EPragmaProtocolType::Http)
-			);
-			GameHttp->Init(
-				BuildBaseUrl(Response.GameBackend, EPragmaProtocolType::Http),
-				BuildApiUrl(Response.GameBackend, EPragmaProtocolType::Http)
-			);
-			SocialWebSocket->Init(BuildApiUrl(Response.SocialBackend, EPragmaProtocolType::WebSocket));
-			GameWebSocket->Init(BuildApiUrl(Response.GameBackend, EPragmaProtocolType::WebSocket));
+	InfoInitConfigState = EInitConfigState::Received;
+	TypesInitConfigState = EInitConfigState::Received;
 
-			InfoInitConfigState = EInitConfigState::Received;
-
-			GameShardId = Response.GameShardId;
-			TryFinishInit();
-		});
-
-	// InitializerHttp can be a nullptr if TryFinishInit is called. This can be triggered when Initializer->HttpGet calls its callback synchronously (in tests).
-	if (InitializerHttp == nullptr)
-	{
-		return;
-	}
-	// Get Types info to pass along to Protocols.
-	InitializerHttp->HttpGet<FPragmaTypesV1Response>(TEXT("/v1/types"),
-		[this](const TPragmaResult<TSharedPtr<FJsonObject>> Result)
-		{
-			if (Status != EStatus::RequestedBackendConfig)
-			{
-				// Other call probably failed and changed state already.
-				return;
-			}
-			if (Result.IsFailure())
-			{
-				PRAGMA_LOG(Error,
-					"UPragmaConnection::UpdateBackendConfig -- Failed to retrieve backend types. Will be unable to"
-					" connect to Pragma backend. Check to make sure the PragmaBackendAddress provided is correct!");
-				Status = EStatus::ReadyForBackendConfig;
-				InfoInitConfigState = EInitConfigState::Error;
-				InitResult = TPragmaResult<>::Failure(Result.Error());
-				TryFinishInit();
-				return;
-			}
-
-			BackendTypeConverter->LoadBackendIds(Result.Payload());
-
-			TypesInitConfigState = EInitConfigState::Received;
-			TryFinishInit();
-		});
+	TryFinishInit();
+	OnBackendConfigComplete.Broadcast(TPragmaResult<>::Success());
 }
 
 void UPragmaConnection::Connect(FString InPragmaSocialToken,
@@ -348,8 +280,17 @@ void UPragmaConnection::Connect(FString InPragmaSocialToken,
 	LastConnectionError.Reset();
 	Status = EStatus::Connecting;
 	SetAuthTokens(MoveTemp(InPragmaSocialToken), MoveTemp(InPragmaGameToken));
-	SocialWebSocket->Connect();
-	GameWebSocket->Connect();
+	// SocialWebSocket->Connect();
+	// GameWebSocket->Connect();
+	StubbedConnect();
+}
+
+void UPragmaConnection::StubbedConnect()
+{
+	Status = EStatus::Connected;
+	OnConnected.Broadcast();
+	OnConnectedComplete.Broadcast(TPragmaResult<>::Success());
+	OnConnectedComplete.Clear();
 }
 
 TOptional<float> UPragmaConnection::RemainingSecondsUntilFullDisconnect() const
@@ -359,8 +300,8 @@ TOptional<float> UPragmaConnection::RemainingSecondsUntilFullDisconnect() const
 
 void UPragmaConnection::Disconnect()
 {
-	SocialWebSocket->Close();
-	GameWebSocket->Close();
+	// SocialWebSocket->Close();
+	// GameWebSocket->Close();
 }
 
 FPragmaProtocol& UPragmaConnection::Protocol(const EPragmaProtocolType Protocol,
