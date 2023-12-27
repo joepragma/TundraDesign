@@ -172,21 +172,25 @@ void FPlayer::LogOut(const FLoggedOutDelegate& OnComplete)
 
 void FPlayer::StubbedLogin(const FLoggedInDelegate& OnComplete)
 {
-	GameJwt = {
-		.Payload = {
-			.DisplayName = "Bobby Bobster",
-			.Discriminator = "1234",
-			.PragmaPlayerId = "FakePragmaPlayerId",
-			.PragmaSocialId = "FakePragmaSocialId"
-		}
-	};
-	IdValue = MoveTemp(GameJwt.Payload.PragmaPlayerId);
-	SocialIdValue = MoveTemp(GameJwt.Payload.PragmaSocialId);
-	FullDisplayNameValue = FString::Printf(TEXT("%s#%s"), *DisplayName(), *Discriminator());
-	GameToken = "FakeGameToken";
-	SocialToken = "FakeSocialToken";
+	FPragmaTimerHandle TimerHandle;
+	TimerManager()->SetTimer(TimerHandle, FPragmaTimerDelegate::CreateSPLambda(this, [this, OnComplete]
+	{
+		GameJwt = {
+			.Payload = {
+				.DisplayName = "Bobby Bobster",
+				.Discriminator = "1234",
+				.PragmaPlayerId = "FakePragmaPlayerId",
+				.PragmaSocialId = "FakePragmaSocialId"
+			}
+		};
+		IdValue = MoveTemp(GameJwt.Payload.PragmaPlayerId);
+		SocialIdValue = MoveTemp(GameJwt.Payload.PragmaSocialId);
+		FullDisplayNameValue = FString::Printf(TEXT("%s#%s"), *DisplayName(), *Discriminator());
+		GameToken = "FakeGameToken";
+		SocialToken = "FakeSocialToken";
 
-	auto _ = OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
+		auto _ = OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
+	}), 3, false);
 }
 
 void FPlayer::StubbedLogout(const FLoggedOutDelegate& OnComplete)
