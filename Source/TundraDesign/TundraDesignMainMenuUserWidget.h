@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "PragmaPtr.h"
+#include "TundraDesignStructs.h"
 #include "TundraDesignMainMenuUserWidget.generated.h"
 
 PRAGMA_FWD(FPlayer);
@@ -19,6 +20,9 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
 	bool IsLoggedIn{false};
+
+	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
+	FTundraDesignPlayer Player{};
 
 private:
 	Pragma::FPlayerPtr PragmaPlayer;

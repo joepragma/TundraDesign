@@ -29,6 +29,9 @@ void UTundraDesignMainMenuUserWidget::DoLogin()
 			{
 				UE_LOG(LogTemp, Display, TEXT("MainMenu - Login succeeded."));
 				IsLoggedIn = true;
+				Player.PlayerId = PragmaPlayer->Id();
+				Player.SocialId = PragmaPlayer->SocialId();
+				Player.Username = PragmaPlayer->FullDisplayName();
 			}
 			else
 			{
