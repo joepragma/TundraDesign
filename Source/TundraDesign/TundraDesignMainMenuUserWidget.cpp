@@ -13,21 +13,22 @@ void UTundraDesignMainMenuUserWidget::NativeOnInitialized()
 
 	PragmaPlayer = GetOwningLocalPlayer()->GetSubsystem<UPragmaLocalPlayerSubsystem>()->Player();
 
-	UE_LOG(LogTemp, Display, TEXT("MainMenu - Logging in..."));
-	const auto SteamToken = "MyFakeSteamTokenFromConfig";
-	LogIn(SteamToken);
+	LoginAndGetData();
 }
 
-void UTundraDesignMainMenuUserWidget::LogIn(const FString& SteamToken)
+void UTundraDesignMainMenuUserWidget::LoginAndGetData()
 {
+	UE_LOG(LogTemp, Display, TEXT("MainMenu - Logging in..."));
+	const auto SteamToken = "MyFakeSteamTokenFromConfig";
 	PragmaPlayer->LogIn(
 		EPragma_Account_IdProvider::STEAM,
 		SteamToken,
-		Pragma::FPlayer::FLoggedInDelegate::CreateWeakLambda(this, [](const TPragmaResult<>& Result)
+		Pragma::FPlayer::FLoggedInDelegate::CreateWeakLambda(this, [this](const TPragmaResult<>& Result)
 		{
 			if (Result.IsSuccessful())
 			{
 				UE_LOG(LogTemp, Display, TEXT("MainMenu - Login succeeded."));
+				OnLoggedInAndDataGotten.Broadcast();
 			}
 			else
 			{
