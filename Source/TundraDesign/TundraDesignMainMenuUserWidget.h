@@ -9,8 +9,6 @@
 
 PRAGMA_FWD(FPlayer);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLoggedInAndDataGotten);
-
 UCLASS()
 class TUNDRADESIGN_API UTundraDesignMainMenuUserWidget : public UUserWidget
 {
@@ -19,11 +17,11 @@ class TUNDRADESIGN_API UTundraDesignMainMenuUserWidget : public UUserWidget
 public:
 	virtual void NativeOnInitialized() override;
 
-	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
-	FOnLoggedInAndDataGotten OnLoggedInAndDataGotten;
+	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
+	bool IsLoggedIn{false};
 
 private:
 	Pragma::FPlayerPtr PragmaPlayer;
 
-	void LoginAndGetData();
+	void DoLogin();
 };
