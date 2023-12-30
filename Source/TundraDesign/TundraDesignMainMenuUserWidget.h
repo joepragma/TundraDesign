@@ -18,14 +18,14 @@ class TUNDRADESIGN_API UTundraDesignMainMenuUserWidget : public UUserWidget
 public:
 	virtual void NativeOnInitialized() override;
 
-	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
-	bool IsLoggedIn{false};
+	UFUNCTION(BlueprintImplementableEvent, Category="TundraDesign")
+	void OnTundraLogin();
 
-	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
-	FTundraDesignPlayer Player{};
+	UFUNCTION(BlueprintImplementableEvent, Category="TundraDesign")
+	void OnTundraPlayerUpdated(FTundraDesignPlayer TundraPlayer);
 
 private:
 	Pragma::FPlayerPtr PragmaPlayer;
 
-	void DoLogin();
+	void DoTundraLogin();
 };
