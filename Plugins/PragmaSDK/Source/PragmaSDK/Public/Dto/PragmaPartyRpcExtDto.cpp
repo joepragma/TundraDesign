@@ -7,12 +7,13 @@
 #include "CoreMinimal.h"
 #include "PragmaJson.h"
 
-
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
 
 bool operator==(const FPragma_Party_ExtPrivatePlayer& Lhs, const FPragma_Party_ExtPrivatePlayer& Rhs)
 {
 	return true // Initial true allows simpler codegen.
-			&& Lhs.VoipToken == Rhs.VoipToken
 ;
 }
 bool operator!=(const FPragma_Party_ExtPrivatePlayer& Lhs, const FPragma_Party_ExtPrivatePlayer& Rhs)
@@ -24,8 +25,6 @@ bool operator!=(const FPragma_Party_ExtPrivatePlayer& Lhs, const FPragma_Party_E
 bool operator==(const FPragma_Party_ExtBroadcastPlayer& Lhs, const FPragma_Party_ExtBroadcastPlayer& Rhs)
 {
 	return true // Initial true allows simpler codegen.
-			&& Lhs.DesiredCharacter == Rhs.DesiredCharacter
-			&& Lhs.SelectedCostumeCatalogId == Rhs.SelectedCostumeCatalogId
 ;
 }
 bool operator!=(const FPragma_Party_ExtBroadcastPlayer& Lhs, const FPragma_Party_ExtBroadcastPlayer& Rhs)
@@ -38,9 +37,6 @@ bool operator==(const FPragma_Party_ExtBroadcastParty& Lhs, const FPragma_Party_
 {
 	return true // Initial true allows simpler codegen.
 			&& Lhs.GameMode == Rhs.GameMode
-			&& Lhs.MatchmakingStyle == Rhs.MatchmakingStyle
-			&& Lhs.MatchDurationInMillis == Rhs.MatchDurationInMillis
-			&& Lhs.MatchmakingKey == Rhs.MatchmakingKey
 ;
 }
 bool operator!=(const FPragma_Party_ExtBroadcastParty& Lhs, const FPragma_Party_ExtBroadcastParty& Rhs)
@@ -69,12 +65,6 @@ bool FPragma_Party_ExtUpdatePartyRequest_Update::Equals(const FPragma_Party_ExtU
 	{
 	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::NewGameMode:
 		return NewGameMode() == Other.NewGameMode();
-	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::MatchmakingStyle:
-		return MatchmakingStyle() == Other.MatchmakingStyle();
-	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::GameDurationInMillis:
-		return GameDurationInMillis() == Other.GameDurationInMillis();
-	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::ShouldCauseMatchmakingException:
-		return ShouldCauseMatchmakingException() == Other.ShouldCauseMatchmakingException();
 	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::Invalid:
         return true;
 	default:
@@ -91,15 +81,6 @@ FPragma_Party_ExtUpdatePartyRequest_Update& FPragma_Party_ExtUpdatePartyRequest_
 	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::NewGameMode:
 		new(Union.NewGameMode.GetTypedPtr()) EPragma_Party_GameMode(Other.NewGameMode());
 		break;
-	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::MatchmakingStyle:
-		new(Union.MatchmakingStyle.GetTypedPtr()) EPragma_Party_MatchmakingStyle(Other.MatchmakingStyle());
-		break;
-	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::GameDurationInMillis:
-		new(Union.GameDurationInMillis.GetTypedPtr()) int64(Other.GameDurationInMillis());
-		break;
-	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::ShouldCauseMatchmakingException:
-		new(Union.ShouldCauseMatchmakingException.GetTypedPtr()) bool(Other.ShouldCauseMatchmakingException());
-		break;
 	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::Invalid:
 	default:
 		break;
@@ -114,15 +95,6 @@ void FPragma_Party_ExtUpdatePartyRequest_Update::Reset()
 	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::NewGameMode:
 		// Primitive type, no destructor.
 		break;
-	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::MatchmakingStyle:
-		// Primitive type, no destructor.
-		break;
-	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::GameDurationInMillis:
-		// Primitive type, no destructor.
-		break;
-	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::ShouldCauseMatchmakingException:
-		// Primitive type, no destructor.
-		break;
 	case EPragma_Party_ExtUpdatePartyRequest_UpdateType::Invalid:
 	default:
 		break;
@@ -134,42 +106,12 @@ const EPragma_Party_GameMode& FPragma_Party_ExtUpdatePartyRequest_Update::NewGam
 	checkf(OneOfType() == EPragma_Party_ExtUpdatePartyRequest_UpdateType::NewGameMode, TEXT("Failed to retrieve NewGameMode from FPragma_Party_ExtUpdatePartyRequest_Update. Check the OneOfType() before accessing the value."));
 	return *Union.NewGameMode.GetTypedPtr();
 }
-const EPragma_Party_MatchmakingStyle& FPragma_Party_ExtUpdatePartyRequest_Update::MatchmakingStyle() const {
-	checkf(OneOfType() == EPragma_Party_ExtUpdatePartyRequest_UpdateType::MatchmakingStyle, TEXT("Failed to retrieve MatchmakingStyle from FPragma_Party_ExtUpdatePartyRequest_Update. Check the OneOfType() before accessing the value."));
-	return *Union.MatchmakingStyle.GetTypedPtr();
-}
-const int64& FPragma_Party_ExtUpdatePartyRequest_Update::GameDurationInMillis() const {
-	checkf(OneOfType() == EPragma_Party_ExtUpdatePartyRequest_UpdateType::GameDurationInMillis, TEXT("Failed to retrieve GameDurationInMillis from FPragma_Party_ExtUpdatePartyRequest_Update. Check the OneOfType() before accessing the value."));
-	return *Union.GameDurationInMillis.GetTypedPtr();
-}
-const bool& FPragma_Party_ExtUpdatePartyRequest_Update::ShouldCauseMatchmakingException() const {
-	checkf(OneOfType() == EPragma_Party_ExtUpdatePartyRequest_UpdateType::ShouldCauseMatchmakingException, TEXT("Failed to retrieve ShouldCauseMatchmakingException from FPragma_Party_ExtUpdatePartyRequest_Update. Check the OneOfType() before accessing the value."));
-	return *Union.ShouldCauseMatchmakingException.GetTypedPtr();
-}
 
 void FPragma_Party_ExtUpdatePartyRequest_Update::SetNewGameMode(const EPragma_Party_GameMode& Value)
 {
 	Reset();
 	Type = EPragma_Party_ExtUpdatePartyRequest_UpdateType::NewGameMode;
 	new(Union.NewGameMode.GetTypedPtr()) EPragma_Party_GameMode(Value);
-}
-void FPragma_Party_ExtUpdatePartyRequest_Update::SetMatchmakingStyle(const EPragma_Party_MatchmakingStyle& Value)
-{
-	Reset();
-	Type = EPragma_Party_ExtUpdatePartyRequest_UpdateType::MatchmakingStyle;
-	new(Union.MatchmakingStyle.GetTypedPtr()) EPragma_Party_MatchmakingStyle(Value);
-}
-void FPragma_Party_ExtUpdatePartyRequest_Update::SetGameDurationInMillis(const int64& Value)
-{
-	Reset();
-	Type = EPragma_Party_ExtUpdatePartyRequest_UpdateType::GameDurationInMillis;
-	new(Union.GameDurationInMillis.GetTypedPtr()) int64(Value);
-}
-void FPragma_Party_ExtUpdatePartyRequest_Update::SetShouldCauseMatchmakingException(const bool& Value)
-{
-	Reset();
-	Type = EPragma_Party_ExtUpdatePartyRequest_UpdateType::ShouldCauseMatchmakingException;
-	new(Union.ShouldCauseMatchmakingException.GetTypedPtr()) bool(Value);
 }
 
 bool FPragma_Party_ExtUpdatePartyRequest_Update::SerializeIntoParentJson(const void* Value, TSharedRef<FJsonObject>& OutJsonObj)
@@ -179,15 +121,6 @@ bool FPragma_Party_ExtUpdatePartyRequest_Update::SerializeIntoParentJson(const v
 	{
 		case EPragma_Party_ExtUpdatePartyRequest_UpdateType::NewGameMode:
 			OutJsonObj->SetField("newGameMode", PragmaJson::EnumToJsonValue(*OneOf.Union.NewGameMode.GetTypedPtr()));
-			break;
-		case EPragma_Party_ExtUpdatePartyRequest_UpdateType::MatchmakingStyle:
-			OutJsonObj->SetField("matchmakingStyle", PragmaJson::EnumToJsonValue(*OneOf.Union.MatchmakingStyle.GetTypedPtr()));
-			break;
-		case EPragma_Party_ExtUpdatePartyRequest_UpdateType::GameDurationInMillis:
-			OutJsonObj->SetField("gameDurationInMillis", PragmaJson::Int64ToJsonValue(*OneOf.Union.GameDurationInMillis.GetTypedPtr()));
-			break;
-		case EPragma_Party_ExtUpdatePartyRequest_UpdateType::ShouldCauseMatchmakingException:
-			OutJsonObj->SetField("shouldCauseMatchmakingException", PragmaJson::BoolToJsonValue(*OneOf.Union.ShouldCauseMatchmakingException.GetTypedPtr()));
 			break;
 		default:
 			break;
@@ -202,24 +135,6 @@ bool FPragma_Party_ExtUpdatePartyRequest_Update::DeserializeFromParentJson(const
 	{
 		OutOneOf.Type = EPragma_Party_ExtUpdatePartyRequest_UpdateType::NewGameMode;
 		new(OutOneOf.Union.NewGameMode.GetTypedPtr()) EPragma_Party_GameMode(PragmaJson::JsonValueToEnum<EPragma_Party_GameMode>(JsonObj->TryGetField(TEXT("newGameMode")).ToSharedRef()));
-		return true; // return to short circuit any other checks.
-	}
-	if (JsonObj->HasField("matchmakingStyle"))
-	{
-		OutOneOf.Type = EPragma_Party_ExtUpdatePartyRequest_UpdateType::MatchmakingStyle;
-		new(OutOneOf.Union.MatchmakingStyle.GetTypedPtr()) EPragma_Party_MatchmakingStyle(PragmaJson::JsonValueToEnum<EPragma_Party_MatchmakingStyle>(JsonObj->TryGetField(TEXT("matchmakingStyle")).ToSharedRef()));
-		return true; // return to short circuit any other checks.
-	}
-	if (JsonObj->HasField("gameDurationInMillis"))
-	{
-		OutOneOf.Type = EPragma_Party_ExtUpdatePartyRequest_UpdateType::GameDurationInMillis;
-		new(OutOneOf.Union.GameDurationInMillis.GetTypedPtr()) int64(PragmaJson::JsonValueToInt64(JsonObj->TryGetField(TEXT("gameDurationInMillis")).ToSharedRef()));
-		return true; // return to short circuit any other checks.
-	}
-	if (JsonObj->HasField("shouldCauseMatchmakingException"))
-	{
-		OutOneOf.Type = EPragma_Party_ExtUpdatePartyRequest_UpdateType::ShouldCauseMatchmakingException;
-		new(OutOneOf.Union.ShouldCauseMatchmakingException.GetTypedPtr()) bool(PragmaJson::JsonValueToBool(JsonObj->TryGetField(TEXT("shouldCauseMatchmakingException")).ToSharedRef()));
 		return true; // return to short circuit any other checks.
 	}
 	// Per protobuf spec, oneofs have _at most_ one of the fields. None set is valid, so we always return true.
@@ -276,7 +191,6 @@ bool operator!=(const FPragma_Party_ExtPlayerJoinRequest& Lhs, const FPragma_Par
 bool operator==(const FPragma_Party_ExtCreateRequest& Lhs, const FPragma_Party_ExtCreateRequest& Rhs)
 {
 	return true // Initial true allows simpler codegen.
-			&& Lhs.MatchmakingKey == Rhs.MatchmakingKey
 ;
 }
 bool operator!=(const FPragma_Party_ExtCreateRequest& Lhs, const FPragma_Party_ExtCreateRequest& Rhs)
@@ -303,10 +217,6 @@ bool FPragma_Party_ExtUpdatePartyPlayerRequest_Update::Equals(const FPragma_Part
     }
 	switch (OneOfType())
 	{
-	case EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCharacterSelection:
-		return NewCharacterSelection() == Other.NewCharacterSelection();
-	case EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCostumeCatalogId:
-		return NewCostumeCatalogId() == Other.NewCostumeCatalogId();
 	case EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::Invalid:
         return true;
 	default:
@@ -320,12 +230,6 @@ FPragma_Party_ExtUpdatePartyPlayerRequest_Update& FPragma_Party_ExtUpdatePartyPl
 	Type = Other.OneOfType();
 	switch (Other.OneOfType())
 	{
-	case EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCharacterSelection:
-		new(Union.NewCharacterSelection.GetTypedPtr()) EPragma_Party_Character(Other.NewCharacterSelection());
-		break;
-	case EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCostumeCatalogId:
-		new(Union.NewCostumeCatalogId.GetTypedPtr()) FString(Other.NewCostumeCatalogId());
-		break;
 	case EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::Invalid:
 	default:
 		break;
@@ -337,12 +241,6 @@ void FPragma_Party_ExtUpdatePartyPlayerRequest_Update::Reset()
 {
 	switch (OneOfType())
 	{
-	case EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCharacterSelection:
-		// Primitive type, no destructor.
-		break;
-	case EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCostumeCatalogId:
-		Union.NewCostumeCatalogId.GetTypedPtr()->~FString();
-		break;
 	case EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::Invalid:
 	default:
 		break;
@@ -350,40 +248,11 @@ void FPragma_Party_ExtUpdatePartyPlayerRequest_Update::Reset()
 	Type = EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::Invalid;
 }
 
-const EPragma_Party_Character& FPragma_Party_ExtUpdatePartyPlayerRequest_Update::NewCharacterSelection() const {
-	checkf(OneOfType() == EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCharacterSelection, TEXT("Failed to retrieve NewCharacterSelection from FPragma_Party_ExtUpdatePartyPlayerRequest_Update. Check the OneOfType() before accessing the value."));
-	return *Union.NewCharacterSelection.GetTypedPtr();
-}
-const FString& FPragma_Party_ExtUpdatePartyPlayerRequest_Update::NewCostumeCatalogId() const {
-	checkf(OneOfType() == EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCostumeCatalogId, TEXT("Failed to retrieve NewCostumeCatalogId from FPragma_Party_ExtUpdatePartyPlayerRequest_Update. Check the OneOfType() before accessing the value."));
-	return *Union.NewCostumeCatalogId.GetTypedPtr();
-}
-
-void FPragma_Party_ExtUpdatePartyPlayerRequest_Update::SetNewCharacterSelection(const EPragma_Party_Character& Value)
-{
-	Reset();
-	Type = EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCharacterSelection;
-	new(Union.NewCharacterSelection.GetTypedPtr()) EPragma_Party_Character(Value);
-}
-void FPragma_Party_ExtUpdatePartyPlayerRequest_Update::SetNewCostumeCatalogId(const FString& Value)
-{
-	Reset();
-	Type = EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCostumeCatalogId;
-	new(Union.NewCostumeCatalogId.GetTypedPtr()) FString(Value);
-}
-
 bool FPragma_Party_ExtUpdatePartyPlayerRequest_Update::SerializeIntoParentJson(const void* Value, TSharedRef<FJsonObject>& OutJsonObj)
 {
 	const FPragma_Party_ExtUpdatePartyPlayerRequest_Update& OneOf = static_cast<const FPragma_Party_ExtUpdatePartyPlayerRequest*>(Value)->Update;
 	switch (OneOf.OneOfType())
 	{
-		case EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCharacterSelection:
-			OutJsonObj->SetField("newCharacterSelection", PragmaJson::EnumToJsonValue(*OneOf.Union.NewCharacterSelection.GetTypedPtr()));
-			break;
-		case EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCostumeCatalogId:
-			OutJsonObj->SetField("newCostumeCatalogId", PragmaJson::StringToJsonValue(*OneOf.Union.NewCostumeCatalogId.GetTypedPtr()));
-			break;
-		default:
 			break;
 	}
 	// Per protobuf spec, it's ok to have empty oneof.
@@ -392,18 +261,6 @@ bool FPragma_Party_ExtUpdatePartyPlayerRequest_Update::SerializeIntoParentJson(c
 bool FPragma_Party_ExtUpdatePartyPlayerRequest_Update::DeserializeFromParentJson(const TSharedRef<FJsonObject>& JsonObj, void* OutValue)
 {
 	FPragma_Party_ExtUpdatePartyPlayerRequest_Update& OutOneOf = static_cast<FPragma_Party_ExtUpdatePartyPlayerRequest*>(OutValue)->Update;
-	if (JsonObj->HasField("newCharacterSelection"))
-	{
-		OutOneOf.Type = EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCharacterSelection;
-		new(OutOneOf.Union.NewCharacterSelection.GetTypedPtr()) EPragma_Party_Character(PragmaJson::JsonValueToEnum<EPragma_Party_Character>(JsonObj->TryGetField(TEXT("newCharacterSelection")).ToSharedRef()));
-		return true; // return to short circuit any other checks.
-	}
-	if (JsonObj->HasField("newCostumeCatalogId"))
-	{
-		OutOneOf.Type = EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType::NewCostumeCatalogId;
-		new(OutOneOf.Union.NewCostumeCatalogId.GetTypedPtr()) FString(PragmaJson::JsonValueToString(JsonObj->TryGetField(TEXT("newCostumeCatalogId")).ToSharedRef()));
-		return true; // return to short circuit any other checks.
-	}
 	// Per protobuf spec, oneofs have _at most_ one of the fields. None set is valid, so we always return true.
 	return true;
 }

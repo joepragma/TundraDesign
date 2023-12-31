@@ -7,6 +7,10 @@ DEFINE_LOG_CATEGORY_STATIC(LogPragmaPartyProxy, Error, All);
 
 #define PARTY_PROXY_LOG(Verbosity, Format, ...) { PRAGMA_BASE_LOG(LogPragmaPartyProxy, Verbosity, Format, ##__VA_ARGS__); }
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 bool UPragmaPartyProxy::Initialize(FPragma_Party_BroadcastParty InParty, int64 Version)
 {
 	return UpdateWithVersionGuard(Version, [this, PartyDetailsV1 = MoveTemp(InParty)]
@@ -53,13 +57,6 @@ bool UPragmaPartyProxy::UpdateFrom(FPragma_Party_BroadcastParty InParty, int64 V
 
 bool UPragmaPartyProxy::PassesVersionGuard(int64 NewVersion) const
 {
-	if (NewVersion <= PartyVersion)
-	{
-		PARTY_PROXY_LOG(Warning, "Ignoring out-of-date Party with version %lld. Current Version is %lld",
-			NewVersion,
-			PartyVersion);
-		return false;
-	}
 	return true;
 }
 

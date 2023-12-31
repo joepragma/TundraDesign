@@ -6,10 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "Dom/JsonObject.h"
-#include "Dto/PragmaTypesDto.h"
-#include "Dto/PragmaOptionsDto.h"
 #include "Dto/PragmaMissionsDto.h"
-#include "Dto/PragmaPartyRpcExtDto.h"
 
 #include "PragmaGameInstanceExtDto.generated.h"
 
@@ -25,6 +22,10 @@ struct FPragma_GameInstance_ExtRemovedFromGame;
 struct FPragma_GameInstance_ExtRemovePlayer;
 struct FPragma_GameInstance_ExtUpdateGameInstanceRequest;
 struct FPragma_GameInstance_ExtRemovePlayersRequest;
+
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
 
 //
 // Source protos:
@@ -57,13 +58,6 @@ USTRUCT(BlueprintType, Category=Pragma)
 struct FPragma_GameInstance_ExtGameServerPlayer
 {
 	GENERATED_BODY()
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Pragma)
-	EPragma_Party_Character SelectedCharacter{static_cast<EPragma_Party_Character>(0)};
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Pragma)
-	FString SelectedCostumeCatalogId;
-
 };
 PRAGMASDK_API bool operator==(const FPragma_GameInstance_ExtGameServerPlayer& Lhs, const FPragma_GameInstance_ExtGameServerPlayer& Rhs);
 PRAGMASDK_API bool operator!=(const FPragma_GameInstance_ExtGameServerPlayer& Lhs, const FPragma_GameInstance_ExtGameServerPlayer& Rhs);

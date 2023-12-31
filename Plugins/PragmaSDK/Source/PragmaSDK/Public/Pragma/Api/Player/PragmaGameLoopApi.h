@@ -21,6 +21,10 @@ class UPragmaPartyPlayer;
 class UPragmaParty;
 struct FPragmaMessageMetadata;
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 UCLASS(BlueprintType, Transient, Config=Game, Category=Pragma)
 class PRAGMASDK_API UPragmaGameLoopApi final : public UPragmaPlayerApi
 {
@@ -495,6 +499,13 @@ private:
 
 	TArray<FPragmaPartyInvite> PendingInvites;
 
+	////////////////////////////////////////////////////////////////
+	// Stubs
+	////////////////////////////////////////////////////////////////
+
+	void StubbedCreateParty(const FPragma_Party_ExtCreateRequest& ExtCreateRequest, const FOnCompleteDelegate& OnComplete) const;
+	void StubbedLeaveParty(const FOnCompleteDelegate& OnComplete) const;
+	
 	////////////////////////////////////////////////////////////////
 	// Notification Handlers
 	////////////////////////////////////////////////////////////////

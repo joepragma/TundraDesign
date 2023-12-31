@@ -179,15 +179,15 @@ void FPlayer::StubbedLogin(const FLoggedInDelegate& OnComplete)
 			.Payload = {
 				.DisplayName = "Bobby Bobster",
 				.Discriminator = "1234",
-				.PragmaPlayerId = "FakePragmaPlayerId",
-				.PragmaSocialId = "FakePragmaSocialId"
+				.PragmaPlayerId = "StubbedPragmaPlayerId",
+				.PragmaSocialId = "StubbedPragmaSocialId"
 			}
 		};
 		IdValue = MoveTemp(GameJwt.Payload.PragmaPlayerId);
 		SocialIdValue = MoveTemp(GameJwt.Payload.PragmaSocialId);
 		FullDisplayNameValue = FString::Printf(TEXT("%s#%s"), *DisplayName(), *Discriminator());
-		GameToken = "FakeGameToken";
-		SocialToken = "FakeSocialToken";
+		GameToken = "StubbedGameToken";
+		SocialToken = "StubbedSocialToken";
 
 		auto _ = OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
 	}), 3, false);

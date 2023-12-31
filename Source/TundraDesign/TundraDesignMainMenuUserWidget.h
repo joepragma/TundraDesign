@@ -5,10 +5,12 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "PragmaPtr.h"
-#include "TundraDesignStructs.h"
+#include "TundraDesignTypes.h"
 #include "TundraDesignMainMenuUserWidget.generated.h"
 
 PRAGMA_FWD(FPlayer);
+
+class UPragmaParty;
 
 UCLASS()
 class TUNDRADESIGN_API UTundraDesignMainMenuUserWidget : public UUserWidget
@@ -18,14 +20,45 @@ class TUNDRADESIGN_API UTundraDesignMainMenuUserWidget : public UUserWidget
 public:
 	virtual void NativeOnInitialized() override;
 
+	/******* PLAYER *******/
+
+	void TundraLogin();
+
 	UFUNCTION(BlueprintImplementableEvent, Category="TundraDesign")
 	void OnTundraLogin();
 
 	UFUNCTION(BlueprintImplementableEvent, Category="TundraDesign")
 	void OnTundraPlayerUpdated(FTundraDesignPlayer TundraPlayer);
 
+	/******* PARTY *******/
+
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	FTundraDesignParty GetParty();
+
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	bool IsInParty();
+
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	void CreateParty(ETundraDesignGameMode GameMode);
+
+	void HandlePragmaOnJoinedParty(const UPragmaParty* PragmaParty);
+
+	UFUNCTION(BlueprintImplementableEvent, Category="TundraDesign")
+	void OnJoinedParty();
+
+	void HandlePragmaOnPartyChanged(const UPragmaParty* PragmaParty);
+
+	UFUNCTION(BlueprintImplementableEvent, Category="TundraDesign")
+	void OnPartyChanged(FTundraDesignParty TundraParty);
+
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	void LeaveParty();
+
+	void HandlePragmaOnLeftParty();
+
+	UFUNCTION(BlueprintImplementableEvent, Category="TundraDesign")
+	void OnLeftParty();
+
 private:
 	Pragma::FPlayerPtr PragmaPlayer;
-
-	void DoTundraLogin();
 };

@@ -13,10 +13,14 @@ void UTundraDesignMainMenuUserWidget::NativeOnInitialized()
 
 	PragmaPlayer = GetOwningLocalPlayer()->GetSubsystem<UPragmaLocalPlayerSubsystem>()->Player();
 
-	DoTundraLogin();
+	PragmaPlayer->GameLoopApi().OnJoinedParty.AddUObject(this, &UTundraDesignMainMenuUserWidget::HandlePragmaOnJoinedParty);
+	PragmaPlayer->GameLoopApi().OnPartyChanged.AddUObject(this, &UTundraDesignMainMenuUserWidget::HandlePragmaOnPartyChanged);
+	PragmaPlayer->GameLoopApi().OnLeftParty.AddUObject(this, &UTundraDesignMainMenuUserWidget::HandlePragmaOnLeftParty);
+
+	TundraLogin();
 }
 
-void UTundraDesignMainMenuUserWidget::DoTundraLogin()
+void UTundraDesignMainMenuUserWidget::TundraLogin()
 {
 	UE_LOG(LogTemp, Display, TEXT("MainMenu - Logging in..."));
 	const auto SteamToken = "MyFakeSteamTokenFromConfig";
@@ -40,4 +44,72 @@ void UTundraDesignMainMenuUserWidget::DoTundraLogin()
 				UE_LOG(LogTemp, Display, TEXT("MainMenu - Login failed."));
 			}
 		}));
+}
+
+FTundraDesignParty UTundraDesignMainMenuUserWidget::GetParty()
+{
+	if (!IsInParty())
+	{
+		return FTundraDesignParty{};
+	}
+
+	return ToTundraDesignParty(PragmaPlayer->GameLoopApi().GetParty());
+}
+
+bool UTundraDesignMainMenuUserWidget::IsInParty()
+{
+	return PragmaPlayer->GameLoopApi().HasParty();
+}
+
+void UTundraDesignMainMenuUserWidget::CreateParty(ETundraDesignGameMode GameMode)
+{
+	UE_LOG(LogTemp, Display, TEXT("MainMenu - Creating party..."));
+	const FPragma_Party_ExtCreateRequest ExtCreateParty{ToPragmaGameMode(GameMode)};
+	const FPragma_Party_ExtPlayerJoinRequest ExtJoinParty{};
+	PragmaPlayer->GameLoopApi().CreateParty(
+		ExtCreateParty,
+		ExtJoinParty,
+		FOnCompleteDelegate::CreateWeakLambda(this, [](const TPragmaResult<>& Result)
+		{
+			if (Result.IsSuccessful())
+			{
+				UE_LOG(LogTemp, Display, TEXT("MainMenu - Create party succeeded."));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Display, TEXT("MainMenu - Create party failed."));
+			}
+		}));
+}
+
+void UTundraDesignMainMenuUserWidget::HandlePragmaOnJoinedParty(const UPragmaParty*)
+{
+	OnJoinedParty();
+}
+
+void UTundraDesignMainMenuUserWidget::HandlePragmaOnPartyChanged(const UPragmaParty* PragmaParty)
+{
+	OnPartyChanged(ToTundraDesignParty(PragmaParty));
+}
+
+void UTundraDesignMainMenuUserWidget::LeaveParty()
+{
+	UE_LOG(LogTemp, Display, TEXT("MainMenu - Leaving party..."));
+	PragmaPlayer->GameLoopApi().LeaveParty(
+		FOnCompleteDelegate::CreateWeakLambda(this, [](const TPragmaResult<>& Result)
+		{
+			if (Result.IsSuccessful())
+			{
+				UE_LOG(LogTemp, Display, TEXT("MainMenu - Leave party succeeded."));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Display, TEXT("MainMenu - Leave party failed."));
+			}
+		}));
+}
+
+void UTundraDesignMainMenuUserWidget::HandlePragmaOnLeftParty()
+{
+	OnLeftParty();
 }

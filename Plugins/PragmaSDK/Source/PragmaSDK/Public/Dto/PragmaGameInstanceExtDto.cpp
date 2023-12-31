@@ -7,7 +7,9 @@
 #include "CoreMinimal.h"
 #include "PragmaJson.h"
 
-
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
 
 bool operator==(const FPragma_GameInstance_ExtPlayerConnectionDetails& Lhs, const FPragma_GameInstance_ExtPlayerConnectionDetails& Rhs)
 {
@@ -27,8 +29,6 @@ bool operator!=(const FPragma_GameInstance_ExtPlayerConnectionDetails& Lhs, cons
 bool operator==(const FPragma_GameInstance_ExtGameServerPlayer& Lhs, const FPragma_GameInstance_ExtGameServerPlayer& Rhs)
 {
 	return true // Initial true allows simpler codegen.
-			&& Lhs.SelectedCharacter == Rhs.SelectedCharacter
-			&& Lhs.SelectedCostumeCatalogId == Rhs.SelectedCostumeCatalogId
 ;
 }
 bool operator!=(const FPragma_GameInstance_ExtGameServerPlayer& Lhs, const FPragma_GameInstance_ExtGameServerPlayer& Rhs)

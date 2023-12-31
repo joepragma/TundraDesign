@@ -6,7 +6,6 @@
 
 #include "CoreMinimal.h"
 #include "Dom/JsonObject.h"
-#include "Dto/PragmaOptionsDto.h"
 
 #include "PragmaPartyRpcExtDto.generated.h"
 
@@ -19,6 +18,10 @@ struct FPragma_Party_ExtPlayerJoinRequest;
 struct FPragma_Party_ExtCreateRequest;
 struct FPragma_Party_ExtUpdatePartyPlayerRequest;
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 //
 // Source protos:
 // shared/partyRpcExt.proto
@@ -30,45 +33,11 @@ struct FPragma_Party_ExtUpdatePartyPlayerRequest;
 //
 
 UENUM(BlueprintType, Category=Pragma)
-enum class EPragma_Party_Character : uint8
-{
-	CHARACTER_UNSPECIFIED = 0,
-	KNIGHT = 1,
-	MAGE = 2,
-	ROGUE = 3,
-};
-
-//
-// Messages.
-//
-
-//
-// Enums.
-//
-
-UENUM(BlueprintType, Category=Pragma)
 enum class EPragma_Party_GameMode : uint8
 {
 	GAME_MODE_UNSPECIFIED = 0,
-	EXPLORATION = 1,
-	DUNGEON = 2,
-	SOCIAL = 3,
-};
-
-//
-// Messages.
-//
-
-//
-// Enums.
-//
-
-UENUM(BlueprintType, Category=Pragma)
-enum class EPragma_Party_MatchmakingStyle : uint8
-{
-	MATCHMAKING_STYLE_UNSPECIFIED = 0,
-	STANDARD_MATCHMAKING = 1,
-	DIRECT_TO_GAME = 2,
+	NORMAL = 1,
+	RANKED = 2,
 };
 
 //
@@ -79,10 +48,6 @@ USTRUCT(BlueprintType, Category=Pragma)
 struct FPragma_Party_ExtPrivatePlayer
 {
 	GENERATED_BODY()
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Pragma)
-	FString VoipToken;
-
 };
 PRAGMASDK_API bool operator==(const FPragma_Party_ExtPrivatePlayer& Lhs, const FPragma_Party_ExtPrivatePlayer& Rhs);
 PRAGMASDK_API bool operator!=(const FPragma_Party_ExtPrivatePlayer& Lhs, const FPragma_Party_ExtPrivatePlayer& Rhs);
@@ -91,13 +56,6 @@ USTRUCT(BlueprintType, Category=Pragma)
 struct FPragma_Party_ExtBroadcastPlayer
 {
 	GENERATED_BODY()
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Pragma)
-	EPragma_Party_Character DesiredCharacter{static_cast<EPragma_Party_Character>(0)};
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Pragma)
-	FString SelectedCostumeCatalogId;
-
 };
 PRAGMASDK_API bool operator==(const FPragma_Party_ExtBroadcastPlayer& Lhs, const FPragma_Party_ExtBroadcastPlayer& Rhs);
 PRAGMASDK_API bool operator!=(const FPragma_Party_ExtBroadcastPlayer& Lhs, const FPragma_Party_ExtBroadcastPlayer& Rhs);
@@ -109,16 +67,6 @@ struct FPragma_Party_ExtBroadcastParty
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Pragma)
 	EPragma_Party_GameMode GameMode{static_cast<EPragma_Party_GameMode>(0)};
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Pragma)
-	EPragma_Party_MatchmakingStyle MatchmakingStyle{static_cast<EPragma_Party_MatchmakingStyle>(0)};
-
-	UPROPERTY()
-	int64 MatchDurationInMillis{0};
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Pragma)
-	FString MatchmakingKey;
-
 };
 PRAGMASDK_API bool operator==(const FPragma_Party_ExtBroadcastParty& Lhs, const FPragma_Party_ExtBroadcastParty& Rhs);
 PRAGMASDK_API bool operator!=(const FPragma_Party_ExtBroadcastParty& Lhs, const FPragma_Party_ExtBroadcastParty& Rhs);
@@ -128,9 +76,6 @@ enum class EPragma_Party_ExtUpdatePartyRequest_UpdateType : uint8
 {
 	Invalid,
 	NewGameMode,
-	MatchmakingStyle,
-	GameDurationInMillis,
-	ShouldCauseMatchmakingException,
 };
 
 USTRUCT(BlueprintType, Category=Pragma)
@@ -151,14 +96,10 @@ struct PRAGMASDK_API FPragma_Party_ExtUpdatePartyRequest_Update
 	EPragma_Party_ExtUpdatePartyRequest_UpdateType OneOfType() const { return Type; }
 
 	const EPragma_Party_GameMode& NewGameMode() const;
-	const EPragma_Party_MatchmakingStyle& MatchmakingStyle() const;
 	const int64& GameDurationInMillis() const;
 	const bool& ShouldCauseMatchmakingException() const;
 
     void SetNewGameMode(const EPragma_Party_GameMode& Value);
-    void SetMatchmakingStyle(const EPragma_Party_MatchmakingStyle& Value);
-    void SetGameDurationInMillis(const int64& Value);
-    void SetShouldCauseMatchmakingException(const bool& Value);
 
 	static bool SerializeIntoParentJson(const void* Value, TSharedRef<FJsonObject>& OutJsonObj);
 	static bool DeserializeFromParentJson(const TSharedRef<FJsonObject>& JsonObj, void* OutValue);
@@ -170,9 +111,6 @@ private:
 	union
 	{
 		TTypeCompatibleBytes<EPragma_Party_GameMode> NewGameMode;
-		TTypeCompatibleBytes<EPragma_Party_MatchmakingStyle> MatchmakingStyle;
-		TTypeCompatibleBytes<int64> GameDurationInMillis;
-		TTypeCompatibleBytes<bool> ShouldCauseMatchmakingException;
 	} Union{};
 };
 bool operator==(const FPragma_Party_ExtUpdatePartyRequest_Update& Lhs, const FPragma_Party_ExtUpdatePartyRequest_Update& Rhs);
@@ -207,7 +145,7 @@ struct FPragma_Party_ExtCreateRequest
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Pragma)
-	FString MatchmakingKey;
+	EPragma_Party_GameMode GameMode;
 
 };
 PRAGMASDK_API bool operator==(const FPragma_Party_ExtCreateRequest& Lhs, const FPragma_Party_ExtCreateRequest& Rhs);
@@ -217,8 +155,6 @@ UENUM(BlueprintType, Category=Pragma)
 enum class EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType : uint8
 {
 	Invalid,
-	NewCharacterSelection,
-	NewCostumeCatalogId,
 };
 
 USTRUCT(BlueprintType, Category=Pragma)
@@ -238,12 +174,6 @@ struct PRAGMASDK_API FPragma_Party_ExtUpdatePartyPlayerRequest_Update
 
 	EPragma_Party_ExtUpdatePartyPlayerRequest_UpdateType OneOfType() const { return Type; }
 
-	const EPragma_Party_Character& NewCharacterSelection() const;
-	const FString& NewCostumeCatalogId() const;
-
-    void SetNewCharacterSelection(const EPragma_Party_Character& Value);
-    void SetNewCostumeCatalogId(const FString& Value);
-
 	static bool SerializeIntoParentJson(const void* Value, TSharedRef<FJsonObject>& OutJsonObj);
 	static bool DeserializeFromParentJson(const TSharedRef<FJsonObject>& JsonObj, void* OutValue);
 
@@ -253,8 +183,6 @@ private:
 
 	union
 	{
-		TTypeCompatibleBytes<EPragma_Party_Character> NewCharacterSelection;
-		TTypeCompatibleBytes<FString> NewCostumeCatalogId;
 	} Union{};
 };
 bool operator==(const FPragma_Party_ExtUpdatePartyPlayerRequest_Update& Lhs, const FPragma_Party_ExtUpdatePartyPlayerRequest_Update& Rhs);

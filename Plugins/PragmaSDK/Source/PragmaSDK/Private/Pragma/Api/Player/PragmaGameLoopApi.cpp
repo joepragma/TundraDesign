@@ -13,6 +13,10 @@ DEFINE_LOG_CATEGORY_STATIC(LogPragmaGameLoopApi, Error, All);
 
 #define GAME_LOOP_API_LOG(Verbosity, Format, ...) { PRAGMA_BASE_LOG(LogPragmaGameLoopApi, Verbosity, Format, ##__VA_ARGS__); }
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 void UPragmaGameLoopApi::SetDependencies(
 	UPragmaPartyServiceRaw* InPartyRaw,
 	UPragmaMatchmakingServiceRaw* InMatchmakingRaw,
@@ -102,29 +106,33 @@ void UPragmaGameLoopApi::CreateParty(
 		return;
 	}
 
-	const auto Request = FPragma_Party_CreateV1Request{
-		ExtCreateRequest,
-		ExtPlayerJoinRequest,
-		SdkConfig->GetGameClientVersion(),
-		PreferredGameServerZones,
-		GameServerZoneToPing
-	};
-	PartyServiceRaw->CreateV1(Request,
-		UPragmaPartyServiceRaw::FCreateV1Delegate::CreateWeakLambda(this,
-			[this, OnComplete](TPragmaResult<FPragma_Party_CreateV1Response> Result,
-			const FPragmaMessageMetadata& Metadata)
-			{
-				GAME_LOOP_API_LOG(Verbose, "Result? `%d`", Result.IsFailure())
-				if (Result.IsFailure())
-				{
-					OnComplete.ExecuteIfBound(TPragmaResult<>::Failure(Result.Error()));
-					return;
-				}
+	StubbedCreateParty(ExtCreateRequest, OnComplete);
+}
 
-				PartyProxy->Initialize(MoveTemp(Result.Payload().Party), Metadata.SequenceNumber);
-				OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
-			})
-	);
+void UPragmaGameLoopApi::StubbedCreateParty(
+	const FPragma_Party_ExtCreateRequest& ExtCreateRequest,
+	const FOnCompleteDelegate& OnComplete) const
+{
+	FPragma_Party_BroadcastParty BroadcastParty;
+	BroadcastParty.PartyId = "StubbedPragmaPartyId";
+	BroadcastParty.InviteCode = "BQ4TN9";
+	BroadcastParty.ExtBroadcastParty = {ExtCreateRequest.GameMode};
+	BroadcastParty.ExtPrivatePlayer = {};
+	BroadcastParty.PreferredGameServerZones = TArray<FString>();
+	FPragma_Party_BroadcastPartyMember BroadcastPartyMember;
+	BroadcastPartyMember.PlayerId = Player()->Id();
+	BroadcastPartyMember.SocialId = Player()->SocialId();
+	FPragma_Account_DisplayName DisplayName;
+	DisplayName.DisplayName = Player()->DisplayName();
+	DisplayName.Discriminator = Player()->Discriminator();
+	BroadcastPartyMember.DisplayName = DisplayName;
+	BroadcastPartyMember.Ext = {};
+	BroadcastPartyMember.IsLeader = true;
+	BroadcastPartyMember.IsReady = false;
+	BroadcastParty.PartyMembers = {BroadcastPartyMember};
+
+	PartyProxy->Initialize(MoveTemp(BroadcastParty), 0);
+	OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
 }
 
 TFuture<TPragmaResult<>> UPragmaGameLoopApi::CreateParty(
@@ -495,24 +503,15 @@ void UPragmaGameLoopApi::LeaveParty(const FOnCompleteDelegate& OnComplete)
 		return;
 	}
 
-	const FPragma_Party_LeaveV1Request Request{};
-	PartyServiceRaw->LeaveV1(Request,
-		UPragmaPartyServiceRaw::FLeaveV1Delegate::CreateWeakLambda(this,
-			[this, OnComplete](const TPragmaResult<FPragma_Party_LeaveV1Response> Result,
-			const FPragmaMessageMetadata& Metadata)
-			{
-				if (Result.IsFailure())
-				{
-					OnComplete.ExecuteIfBound(TPragmaResult<>::Failure(Result.Error()));
-					return;
-				}
-
-				PartyProxy->TryReset(Metadata.SequenceNumber);
-				GAME_LOOP_API_LOG(Log, "Party left successfully.");
-				OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
-			}
-		));
+	StubbedLeaveParty(OnComplete);
 }
+
+void UPragmaGameLoopApi::StubbedLeaveParty(const FOnCompleteDelegate& OnComplete) const
+{
+	PartyProxy->TryReset(0);
+	OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
+}
+
 
 TFuture<TPragmaResult<>> UPragmaGameLoopApi::LeaveParty()
 {
