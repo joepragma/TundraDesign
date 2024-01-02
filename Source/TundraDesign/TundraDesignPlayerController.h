@@ -4,69 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
-#include "PragmaPtr.h"
-#include "TundraDesignTypes.h"
 #include "TundraDesignPlayerController.generated.h"
 
-PRAGMA_FWD(FPlayer);
-
-class UPragmaParty;
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTundraLogin);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTundraPlayerUpdated, FTundraDesignPlayer, TundraPlayer);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJoinedParty);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPartyChanged, FTundraDesignParty, TundraParty);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftParty);
+class UTundraDesignPragmaAdapter;
 
 UCLASS()
 class TUNDRADESIGN_API ATundraDesignPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-public:
+protected:
 	virtual void BeginPlay() override;
 
-	/******* PLAYER *******/
+public:
+	ATundraDesignPlayerController(const FObjectInitializer& ObjectInitializer);
 
-	void TundraLogin();
-
-	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
-	FOnTundraLogin OnTundraLogin;
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTundraLogin);
-
-	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
-	FOnTundraPlayerUpdated OnTundraPlayerUpdated;
-
-	/******* PARTY *******/
-
-	UFUNCTION(BlueprintCallable, Category="TundraDesign")
-	FTundraDesignParty GetParty();
-
-	UFUNCTION(BlueprintCallable, Category="TundraDesign")
-	bool IsInParty();
-
-	UFUNCTION(BlueprintCallable, Category="TundraDesign")
-	void CreateParty(ETundraDesignGameMode GameMode);
-
-	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
-	FOnJoinedParty OnJoinedParty;
-	void HandlePragmaOnJoinedParty(const UPragmaParty* PragmaParty) const;
-
-	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
-	FOnPartyChanged OnPartyChanged;
-	void HandlePragmaOnPartyChanged(const UPragmaParty* PragmaParty) const;
-
-	UFUNCTION(BlueprintCallable, Category="TundraDesign")
-	void LeaveParty();
-
-	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
-	FOnLeftParty OnLeftParty;
-	void HandlePragmaOnLeftParty() const;
-
-private:
-	Pragma::FPlayerPtr PragmaPlayer;
+	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
+	UTundraDesignPragmaAdapter* PragmaAdapter;
 };

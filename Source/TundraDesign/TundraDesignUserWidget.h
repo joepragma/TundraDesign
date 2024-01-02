@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "TundraDesignUserWidget.generated.h"
 
-class ATundraDesignPlayerController;
+class UTundraDesignPragmaAdapter;
 
 UCLASS()
 class TUNDRADESIGN_API UTundraDesignUserWidget : public UUserWidget
@@ -18,5 +18,5 @@ protected:
 
 public:
 	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
-	ATundraDesignPlayerController* TundraController;
+	UTundraDesignPragmaAdapter* PragmaAdapter;
 };
