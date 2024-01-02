@@ -8,6 +8,10 @@ struct FPragmaMessageMetadata;
 
 PRAGMA_FWD(FSession);
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 namespace Pragma
 {
 class FSessionServiceRawBase;
@@ -49,6 +53,9 @@ public:
 	// Get an existing Game attribute, if set.
 	//
 	virtual const FString* GetAttribute(EPragma_GameSessionAttribute Attribute);
+
+	void StubbedSetGameAttribute(EPragma_GameSessionAttribute Attribute, const FString& AttributeValue);
+	void StubbedClearGameAttribute(EPragma_GameSessionAttribute Attribute);
 
 protected:
 	static void BroadcastAttributeChanged(const TMap<int32, FAttributeChanged>& Events, int32 Key, const FString* AttributeValue);

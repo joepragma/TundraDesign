@@ -8,6 +8,10 @@ DEFINE_LOG_CATEGORY_STATIC(LogPragmaSessionSvc, Error, All);
 
 #define SESSION_SVC_LOG(Verbosity, Format, ...) { PRAGMA_BASE_LOG(LogPragmaSessionSvc, Verbosity, Format, ##__VA_ARGS__); }
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 namespace Pragma
 {
 void FSessionServiceBase::SetDependencies(const FSessionPtr InSession, FSessionServiceRawBase* InRawService, const TSharedPtr<IPragmaTimerManager>& InTimerManager, const float InHeartbeatPeriodSeconds)
@@ -145,6 +149,18 @@ const FString* FSessionServiceBase::GetAttribute(EPragma_SocialSessionAttribute 
 const FString* FSessionServiceBase::GetAttribute(EPragma_GameSessionAttribute Attribute)
 {
 	return GameSessionData.Attributes.Find(static_cast<int32>(Attribute));
+}
+
+void FSessionServiceBase::StubbedSetGameAttribute(EPragma_GameSessionAttribute Attribute, const FString& AttributeValue)
+{
+	GameSessionData.Attributes.Add(static_cast<int32>(Attribute), AttributeValue);
+	BroadcastAttributeChanged(GameSessionData.Events, static_cast<int32>(Attribute), &AttributeValue);
+}
+
+void FSessionServiceBase::StubbedClearGameAttribute(EPragma_GameSessionAttribute Attribute)
+{
+	GameSessionData.Attributes.Remove(static_cast<int32>(Attribute));
+	BroadcastAttributeChanged(GameSessionData.Events, static_cast<int32>(Attribute), nullptr);
 }
 
 void FSessionServiceBase::HandleSocialSessionTerminated(

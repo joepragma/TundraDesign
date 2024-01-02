@@ -190,7 +190,7 @@ void FPlayer::StubbedLogin(const FLoggedInDelegate& OnComplete)
 		SocialToken = "StubbedSocialToken";
 
 		auto _ = OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
-	}), 3, false);
+	}), 2, false);
 }
 
 void FPlayer::StubbedLogout(const FLoggedOutDelegate& OnComplete)

@@ -132,6 +132,7 @@ void UPragmaGameLoopApi::StubbedCreateParty(
 	BroadcastParty.PartyMembers = {BroadcastPartyMember};
 
 	PartyProxy->Initialize(MoveTemp(BroadcastParty), 0);
+	SessionService->StubbedSetGameAttribute(EPragma_GameSessionAttribute::PARTY_ID, BroadcastParty.PartyId);
 	OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
 }
 
@@ -509,6 +510,7 @@ void UPragmaGameLoopApi::LeaveParty(const FOnCompleteDelegate& OnComplete)
 void UPragmaGameLoopApi::StubbedLeaveParty(const FOnCompleteDelegate& OnComplete) const
 {
 	PartyProxy->TryReset(0);
+	SessionService->StubbedClearGameAttribute(EPragma_GameSessionAttribute::PARTY_ID);
 	OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
 }
 
