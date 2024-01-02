@@ -28,7 +28,7 @@ class TUNDRADESIGN_API UTundraDesignPragmaAdapter : public UObject
 
 public:
 	void Initialize(const Pragma::FPlayerPtr& InPragmaPlayer);
-	
+
 	/******* PLAYER *******/
 
 	void TundraLogin();
