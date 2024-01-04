@@ -8,6 +8,10 @@
 
 class UPragmaAccountServiceRaw;
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 UCLASS()
 class PRAGMASDK_API UPragmaAccountService : public UPragmaPlayerApi
 {
@@ -22,7 +26,15 @@ public:
 	// All capabilities should be available on this service, use the Raw API only for custom functionality.
 	UPragmaAccountServiceRaw& Raw() const;
 
+	DECLARE_DELEGATE_OneParam(FGetPragmaPlayerIdDelegate, TPragmaResult<FString> /* Player Id */);
+	void GetPragmaPlayerIdForDisplayName(
+		const FString& DisplayName,
+		const FString& Discriminator,
+		const FGetPragmaPlayerIdDelegate& OnComplete);
+
 private:
 	UPROPERTY()
 	UPragmaAccountServiceRaw* AccountServiceRaw;
+
+	void StubbedGetPragmaPlayerIdForDisplayName(const FGetPragmaPlayerIdDelegate& OnComplete) const;
 };

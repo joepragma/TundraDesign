@@ -213,22 +213,12 @@ void UPragmaGameLoopApi::SendPartyInvite(
 		return;
 	}
 
-	FPragma_Party_SendInviteV1Request Request = {PlayerId};
-	PartyServiceRaw->SendInviteV1(
-		Request,
-		UPragmaPartyServiceRaw::FSendInviteV1Delegate::CreateWeakLambda(this,
-			[this, Request, OnComplete](const TPragmaResult<FPragma_Party_SendInviteV1Response> Result,
-			const FPragmaMessageMetadata&)
-			{
-				if (Result.IsFailure())
-				{
-					OnComplete.ExecuteIfBound(TPragmaResult<FString>::Failure(Result.Error()));
-					return;
-				}
-				GAME_LOOP_API_LOG(Log, "Successfully invited player '%s'.", *Request.InviteePlayerId);
-				OnComplete.ExecuteIfBound(TPragmaResult<FString>(Result.Payload().InviteId));
-			}
-		));
+	StubbedSendPartyInvite(OnComplete);
+}
+
+void UPragmaGameLoopApi::StubbedSendPartyInvite(const FOnInviteSentDelegate& OnInviteSent) const
+{
+	OnInviteSent.ExecuteIfBound(TPragmaResult<FString>("FakeInviteId"));
 }
 
 TFuture<TPragmaResult<FString>> UPragmaGameLoopApi::SendPartyInvite(const FString& PlayerId)
@@ -513,7 +503,6 @@ void UPragmaGameLoopApi::StubbedLeaveParty(const FOnCompleteDelegate& OnComplete
 	SessionService->StubbedClearGameAttribute(EPragma_GameSessionAttribute::PARTY_ID);
 	OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
 }
-
 
 TFuture<TPragmaResult<>> UPragmaGameLoopApi::LeaveParty()
 {

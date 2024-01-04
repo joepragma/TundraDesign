@@ -505,6 +505,7 @@ private:
 
 	void StubbedCreateParty(const FPragma_Party_ExtCreateRequest& ExtCreateRequest, const FOnCompleteDelegate& OnComplete) const;
 	void StubbedLeaveParty(const FOnCompleteDelegate& OnComplete) const;
+	void StubbedSendPartyInvite(const FOnInviteSentDelegate& OnInviteSent) const;
 	
 	////////////////////////////////////////////////////////////////
 	// Notification Handlers

@@ -19,7 +19,10 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJoinedParty);
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPartyChanged, FTundraDesignParty, TundraParty);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSentPartyInvitesChanged, const TArray<FTundraDesignSentPartyInvite>&, SentPartyInvites);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftParty);
+
 
 UCLASS()
 class TUNDRADESIGN_API UTundraDesignPragmaAdapter : public UObject
@@ -60,6 +63,12 @@ public:
 	void HandlePragmaOnPartyChanged(const UPragmaParty* PragmaParty) const;
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	void SendPartyInviteByUsername(FString Username);
+
+	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
+	FOnSentPartyInvitesChanged OnSentPartyInvitesChanged;
+
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
 	void LeaveParty();
 
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
@@ -68,4 +77,6 @@ public:
 
 private:
 	Pragma::FPlayerPtr PragmaPlayer;
+
+	TArray<FTundraDesignSentPartyInvite> SentPartyInvites;
 };

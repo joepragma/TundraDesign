@@ -4,6 +4,10 @@
 #include "PragmaLog.h"
 #include "PragmaPlayer.h"
 
+// ************************************************************
+// *** THIS FILE WAS STUBBED FOR THIS TUNDRA DESIGN PROJECT ***
+// ************************************************************
+
 namespace
 {
 const FString& CoreSdkDoNotCall(const FString& Alternate)
@@ -22,4 +26,17 @@ void UPragmaAccountService::SetDependencies(UPragmaAccountServiceRaw* AccountRaw
 UPragmaAccountServiceRaw& UPragmaAccountService::Raw() const
 {
 	return *AccountServiceRaw;
+}
+
+void UPragmaAccountService::GetPragmaPlayerIdForDisplayName(
+	const FString& DisplayName,
+	const FString& Discriminator,
+	const FGetPragmaPlayerIdDelegate& OnComplete)
+{
+	StubbedGetPragmaPlayerIdForDisplayName(OnComplete);
+}
+
+void UPragmaAccountService::StubbedGetPragmaPlayerIdForDisplayName(const FGetPragmaPlayerIdDelegate& OnComplete) const
+{
+	OnComplete.ExecuteIfBound(TPragmaResult(FString("FakePragmaPlayerId")));
 }

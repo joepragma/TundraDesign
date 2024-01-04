@@ -2,6 +2,7 @@
 
 #include "Dto/PragmaPartyRpcExtDto.h"
 #include "Services/Party/PragmaParty.h"
+#include "Services/Party/PragmaPartyInvite.h"
 #include "Services/Party/PragmaPartyPlayer.h"
 #include "TundraDesignTypes.generated.h"
 
@@ -116,3 +117,18 @@ inline FTundraDesignParty ToTundraDesignParty(const UPragmaParty* Party)
 	}
 	return TundraParty;
 }
+
+USTRUCT(BlueprintType, Category="TundraDesign")
+struct FTundraDesignSentPartyInvite
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
+	FString InviteId;
+
+	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
+	FString InviteePlayerId;
+
+	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
+	FString InviteeUsername;
+};

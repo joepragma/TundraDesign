@@ -4,6 +4,7 @@
 
 #include "PragmaPlayer.h"
 #include "PragmaResult.h"
+#include "Pragma/Api/Player/PragmaGameLoopApi.h"
 #include "Dto/PragmaAccountRpcDto.h"
 
 void UTundraDesignPragmaAdapter::Initialize(const Pragma::FPlayerPtr& InPragmaPlayer)
@@ -64,7 +65,7 @@ void UTundraDesignPragmaAdapter::CreateParty(ETundraDesignGameMode GameMode)
 	PragmaPlayer->GameLoopApi().CreateParty(
 		ExtCreateParty,
 		ExtJoinParty,
-		FOnCompleteDelegate::CreateWeakLambda(this, [](const TPragmaResult<>& Result)
+		UPragmaGameLoopApi::FOnCompleteDelegate::CreateWeakLambda(this, [](const TPragmaResult<>& Result)
 		{
 			if (Result.IsSuccessful())
 			{
@@ -87,11 +88,57 @@ void UTundraDesignPragmaAdapter::HandlePragmaOnPartyChanged(const UPragmaParty* 
 	OnPartyChanged.Broadcast(ToTundraDesignParty(PragmaParty));
 }
 
+void UTundraDesignPragmaAdapter::SendPartyInviteByUsername(FString Username)
+{
+	FString DisplayName, Discriminator;
+	Username.Split("#", &DisplayName, &Discriminator);
+
+	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Getting player id for username..."));
+	PragmaPlayer->Account().GetPragmaPlayerIdForDisplayName(
+		DisplayName,
+		Discriminator,
+		UPragmaAccountService::FGetPragmaPlayerIdDelegate::CreateWeakLambda(
+			this, [this, Username](const TPragmaResult<FString>& GetPlayerIdResult)
+			{
+				if (GetPlayerIdResult.IsSuccessful())
+				{
+					UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Get player id for username succeeded."));
+					FString PlayerId = GetPlayerIdResult.Payload();
+					UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Sending party invite by player id..."));
+					PragmaPlayer->GameLoopApi().SendPartyInvite(
+						PlayerId,
+						UPragmaGameLoopApi::FOnInviteSentDelegate::CreateWeakLambda(
+							this, [this, PlayerId, Username](const TPragmaResult<FString>& SendPartyInviteResult)
+							{
+								if (SendPartyInviteResult.IsSuccessful())
+								{
+									UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Send party invite by player id succeeded."));
+									FString InviteId = SendPartyInviteResult.Payload();
+									FTundraDesignSentPartyInvite SentPartyInvite;
+									SentPartyInvite.InviteId = InviteId;
+									SentPartyInvite.InviteePlayerId = PlayerId;
+									SentPartyInvite.InviteeUsername = Username;
+									SentPartyInvites.Add(SentPartyInvite);
+									OnSentPartyInvitesChanged.Broadcast(SentPartyInvites);
+								}
+								else
+								{
+									UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Send party invite by player id failed."));
+								}
+							}));
+				}
+				else
+				{
+					UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Get player id for username failed."));
+				}
+			}));
+}
+
 void UTundraDesignPragmaAdapter::LeaveParty()
 {
 	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Leaving party..."));
 	PragmaPlayer->GameLoopApi().LeaveParty(
-		FOnCompleteDelegate::CreateWeakLambda(this, [](const TPragmaResult<>& Result)
+		UPragmaGameLoopApi::FOnCompleteDelegate::CreateWeakLambda(this, [](const TPragmaResult<>& Result)
 		{
 			if (Result.IsSuccessful())
 			{
