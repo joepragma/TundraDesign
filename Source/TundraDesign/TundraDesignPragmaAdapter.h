@@ -23,7 +23,6 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSentPartyInvitesChanged, const TA
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftParty);
 
-
 UCLASS()
 class TUNDRADESIGN_API UTundraDesignPragmaAdapter : public UObject
 {
