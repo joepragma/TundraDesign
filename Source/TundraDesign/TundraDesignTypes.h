@@ -2,7 +2,6 @@
 
 #include "Dto/PragmaPartyRpcExtDto.h"
 #include "Services/Party/PragmaParty.h"
-#include "Services/Party/PragmaPartyInvite.h"
 #include "Services/Party/PragmaPartyPlayer.h"
 #include "TundraDesignTypes.generated.h"
 

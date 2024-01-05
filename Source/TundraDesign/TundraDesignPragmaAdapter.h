@@ -11,18 +11,6 @@ PRAGMA_FWD(FPlayer);
 
 class UPragmaParty;
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTundraLogin);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTundraPlayerUpdated, FTundraDesignPlayer, TundraPlayer);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJoinedParty);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPartyChanged, FTundraDesignParty, TundraParty);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSentPartyInvitesChanged, const TArray<FTundraDesignSentPartyInvite>&, SentPartyInvites);
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftParty);
-
 UCLASS()
 class TUNDRADESIGN_API UTundraDesignPragmaAdapter : public UObject
 {
@@ -33,16 +21,27 @@ public:
 
 	/******* PLAYER *******/
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTundraLogin);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTundraPlayerUpdated, FTundraDesignPlayer, TundraPlayer);
+
 	void TundraLogin();
 
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
 	FOnTundraLogin OnTundraLogin;
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnTundraLogin);
 
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
 	FOnTundraPlayerUpdated OnTundraPlayerUpdated;
 
 	/******* PARTY *******/
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJoinedParty);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPartyChanged, FTundraDesignParty, TundraParty);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSentPartyInvitesChanged, const TArray<FTundraDesignSentPartyInvite>&, SentPartyInvites);
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftParty);
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
 	FTundraDesignParty GetParty();

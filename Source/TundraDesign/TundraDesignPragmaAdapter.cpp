@@ -135,6 +135,7 @@ void UTundraDesignPragmaAdapter::SendPartyInviteByUsername(FString Username)
 			}));
 }
 
+// ReSharper disable once CppPassValueParameterByConstReference
 void UTundraDesignPragmaAdapter::HandlePragmaOnInviteAccepted(const FString InviteId)
 {
 	SentPartyInvites.RemoveAll([InviteId](const FTundraDesignSentPartyInvite& Item)
