@@ -66,6 +66,7 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
 	FOnSentPartyInvitesChanged OnSentPartyInvitesChanged;
+	void HandlePragmaOnInviteAccepted(const FString InviteId);
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
 	void LeaveParty();
@@ -73,6 +74,11 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
 	FOnLeftParty OnLeftParty;
 	void HandlePragmaOnLeftParty() const;
+
+	/******* DEV CHEAT *******/
+
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	void DevCheatAcceptFirstSentPartyInvite();
 
 private:
 	Pragma::FPlayerPtr PragmaPlayer;

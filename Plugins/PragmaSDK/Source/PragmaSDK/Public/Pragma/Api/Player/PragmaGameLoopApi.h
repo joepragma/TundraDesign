@@ -481,6 +481,12 @@ public:
 		return SessionService->GetAttribute(EPragma_GameSessionAttribute::GAME_INSTANCE_ID);
 	}
 
+	////////////////////////////////////////////////////////////////
+	// Public Stubs
+	////////////////////////////////////////////////////////////////
+
+	void StubbedTriggerInviteAccepted(const FString& InviteId, const FString& PlayerId, const FString& SocialId, const FString& DisplayName, const FString& Discriminator) const;
+
 private:
 	UPROPERTY()
 	UPragmaPartyServiceRaw* PartyServiceRaw = nullptr;
@@ -500,9 +506,10 @@ private:
 	TArray<FPragmaPartyInvite> PendingInvites;
 
 	////////////////////////////////////////////////////////////////
-	// Stubs
+	// Private Stubs
 	////////////////////////////////////////////////////////////////
 
+	FPragma_Party_BroadcastParty StubbedConvertToBroadcastParty(const UPragmaParty* PragmaParty) const;
 	void StubbedCreateParty(const FPragma_Party_ExtCreateRequest& ExtCreateRequest, const FOnCompleteDelegate& OnComplete) const;
 	void StubbedLeaveParty(const FOnCompleteDelegate& OnComplete) const;
 	void StubbedSendPartyInvite(const FOnInviteSentDelegate& OnInviteSent) const;

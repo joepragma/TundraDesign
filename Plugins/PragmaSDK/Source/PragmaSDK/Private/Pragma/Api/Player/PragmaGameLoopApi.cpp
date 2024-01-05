@@ -92,6 +92,30 @@ void UPragmaGameLoopApi::SetDependencies(
 // Actions.
 ////////////////////////////////////////////////////////////////
 
+FPragma_Party_BroadcastParty UPragmaGameLoopApi::StubbedConvertToBroadcastParty(const UPragmaParty* PragmaParty) const
+{
+	FPragma_Party_BroadcastParty BroadcastParty;
+	BroadcastParty.PartyId = PragmaParty->GetId();
+	BroadcastParty.InviteCode = PragmaParty->GetInviteCode();
+	BroadcastParty.ExtBroadcastParty = PragmaParty->GetExt();
+	BroadcastParty.ExtPrivatePlayer = PragmaParty->GetExtPrivatePlayer();
+	BroadcastParty.PreferredGameServerZones = PragmaParty->GetPreferredGameServerZones();
+
+	for (const auto* PragmaPartyPlayer : PragmaParty->GetPlayers())
+	{
+		FPragma_Party_BroadcastPartyMember BroadcastPartyMember;
+		BroadcastPartyMember.PlayerId = PragmaPartyPlayer->GetPlayerId();
+		BroadcastPartyMember.SocialId = PragmaPartyPlayer->GetSocialId();
+		BroadcastPartyMember.DisplayName = PragmaPartyPlayer->GetDisplayName();
+		BroadcastPartyMember.Ext = PragmaPartyPlayer->GetExt();
+		BroadcastPartyMember.IsLeader = PragmaPartyPlayer->IsLeader();
+		BroadcastPartyMember.IsReady = PragmaPartyPlayer->IsReady();
+		BroadcastParty.PartyMembers.Add(BroadcastPartyMember);
+	}
+
+	return BroadcastParty;
+}
+
 void UPragmaGameLoopApi::CreateParty(
 	const FPragma_Party_ExtCreateRequest& ExtCreateRequest,
 	const FPragma_Party_ExtPlayerJoinRequest& ExtPlayerJoinRequest,
@@ -114,7 +138,7 @@ void UPragmaGameLoopApi::StubbedCreateParty(
 	const FOnCompleteDelegate& OnComplete) const
 {
 	FPragma_Party_BroadcastParty BroadcastParty;
-	BroadcastParty.PartyId = "StubbedPragmaPartyId";
+	BroadcastParty.PartyId = FString::Printf(TEXT("StubbedPartyId%d"), FMath::RandRange(0, 10000));
 	BroadcastParty.InviteCode = "BQ4TN9";
 	BroadcastParty.ExtBroadcastParty = {ExtCreateRequest.GameMode};
 	BroadcastParty.ExtPrivatePlayer = {};
@@ -218,7 +242,8 @@ void UPragmaGameLoopApi::SendPartyInvite(
 
 void UPragmaGameLoopApi::StubbedSendPartyInvite(const FOnInviteSentDelegate& OnInviteSent) const
 {
-	OnInviteSent.ExecuteIfBound(TPragmaResult<FString>("FakeInviteId"));
+	const FString InviteId = FString::Printf(TEXT("StubbedInviteId%d"), FMath::RandRange(0, 10000));
+	OnInviteSent.ExecuteIfBound(TPragmaResult(InviteId));
 }
 
 TFuture<TPragmaResult<FString>> UPragmaGameLoopApi::SendPartyInvite(const FString& PlayerId)
@@ -1320,6 +1345,31 @@ void UPragmaGameLoopApi::HandleInviteResponse(
 		GAME_LOOP_API_LOG(Verbose, "Party invite: '%s' was declined", *Notification.InviteId);
 		OnPartyInviteDeclined.Broadcast(Notification.InviteId);
 	}
+}
+
+void UPragmaGameLoopApi::StubbedTriggerInviteAccepted(
+	const FString& InviteId,
+	const FString& PlayerId,
+	const FString& SocialId,
+	const FString& DisplayName,
+	const FString& Discriminator) const
+{
+	const FPragma_Party_InviteResponseV1Notification Notification{InviteId, true};
+	HandleInviteResponse(Notification, FPragmaMessageMetadata{});
+
+	auto BroadcastParty = StubbedConvertToBroadcastParty(PartyProxy->GetParty());
+
+	FPragma_Party_BroadcastPartyMember BroadcastPartyMember;
+	BroadcastPartyMember.PlayerId = PlayerId;
+	BroadcastPartyMember.SocialId = SocialId;
+	FPragma_Account_DisplayName DisplayNameObj;
+	DisplayNameObj.DisplayName = DisplayName;
+	DisplayNameObj.Discriminator = Discriminator;
+	BroadcastPartyMember.DisplayName = DisplayNameObj;
+	BroadcastPartyMember.Ext = {};
+	BroadcastPartyMember.IsLeader = false;
+	BroadcastPartyMember.IsReady = false;
+	BroadcastParty.PartyMembers.Add(BroadcastPartyMember);
 }
 
 void UPragmaGameLoopApi::HandleAddedToGame(

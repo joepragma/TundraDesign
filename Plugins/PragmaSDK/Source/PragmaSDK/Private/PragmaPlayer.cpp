@@ -179,8 +179,8 @@ void FPlayer::StubbedLogin(const FLoggedInDelegate& OnComplete)
 			.Payload = {
 				.DisplayName = "Bobby Bobster",
 				.Discriminator = "1234",
-				.PragmaPlayerId = "StubbedPragmaPlayerId",
-				.PragmaSocialId = "StubbedPragmaSocialId"
+				.PragmaPlayerId = FString::Printf(TEXT("StubbedPlayerId%d"), FMath::RandRange(0, 10000)),
+				.PragmaSocialId = FString::Printf(TEXT("StubbedSocialId%d"), FMath::RandRange(0, 10000))
 			}
 		};
 		IdValue = MoveTemp(GameJwt.Payload.PragmaPlayerId);

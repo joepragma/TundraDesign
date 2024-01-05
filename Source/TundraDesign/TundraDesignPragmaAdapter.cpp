@@ -13,6 +13,7 @@ void UTundraDesignPragmaAdapter::Initialize(const Pragma::FPlayerPtr& InPragmaPl
 
 	PragmaPlayer->GameLoopApi().OnJoinedParty.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnJoinedParty);
 	PragmaPlayer->GameLoopApi().OnPartyChanged.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnPartyChanged);
+	PragmaPlayer->GameLoopApi().OnPartyInviteAccepted.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnInviteAccepted);
 	PragmaPlayer->GameLoopApi().OnLeftParty.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnLeftParty);
 }
 
@@ -134,6 +135,15 @@ void UTundraDesignPragmaAdapter::SendPartyInviteByUsername(FString Username)
 			}));
 }
 
+void UTundraDesignPragmaAdapter::HandlePragmaOnInviteAccepted(const FString InviteId)
+{
+	SentPartyInvites.RemoveAll([InviteId](const FTundraDesignSentPartyInvite& Item)
+	{
+		return Item.InviteId == InviteId;
+	});
+	OnSentPartyInvitesChanged.Broadcast(SentPartyInvites);
+}
+
 void UTundraDesignPragmaAdapter::LeaveParty()
 {
 	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Leaving party..."));
@@ -154,4 +164,23 @@ void UTundraDesignPragmaAdapter::LeaveParty()
 void UTundraDesignPragmaAdapter::HandlePragmaOnLeftParty() const
 {
 	OnLeftParty.Broadcast();
+}
+
+void UTundraDesignPragmaAdapter::DevCheatAcceptFirstSentPartyInvite()
+{
+	if (SentPartyInvites.Num() == 0) return;
+
+	const FTundraDesignSentPartyInvite SentInvite = SentPartyInvites[0];
+
+	FString DisplayName, Discriminator;
+	SentInvite.InviteeUsername.Split("#", &DisplayName, &Discriminator);
+
+	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Triggering accept first sent party invite..."));
+	PragmaPlayer->GameLoopApi().StubbedTriggerInviteAccepted(
+		SentInvite.InviteId,
+		SentInvite.InviteePlayerId,
+		"SomeFakePragmaSocialId",
+		DisplayName,
+		Discriminator
+	);
 }
