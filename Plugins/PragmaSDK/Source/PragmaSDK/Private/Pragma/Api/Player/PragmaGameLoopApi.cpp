@@ -116,6 +116,36 @@ FPragma_Party_BroadcastParty UPragmaGameLoopApi::StubbedConvertToBroadcastParty(
 	return BroadcastParty;
 }
 
+FPragma_Party_BroadcastPartyMember UPragmaGameLoopApi::StubbedCurrentPlayer(const bool IsLeader) const
+{
+	FPragma_Party_BroadcastPartyMember BroadcastPartyMember;
+	BroadcastPartyMember.PlayerId = Player()->Id();
+	BroadcastPartyMember.SocialId = Player()->SocialId();
+	FPragma_Account_DisplayName DisplayName;
+	DisplayName.DisplayName = Player()->DisplayName();
+	DisplayName.Discriminator = Player()->Discriminator();
+	BroadcastPartyMember.DisplayName = DisplayName;
+	BroadcastPartyMember.Ext = {};
+	BroadcastPartyMember.IsLeader = IsLeader;
+	BroadcastPartyMember.IsReady = false;
+	return BroadcastPartyMember;
+}
+
+FPragma_Party_BroadcastPartyMember UPragmaGameLoopApi::StubbedRandomPlayer(const bool IsLeader) const
+{
+	FPragma_Party_BroadcastPartyMember BroadcastPartyMember;
+	BroadcastPartyMember.PlayerId = FString::Printf(TEXT("StubbedPlayerId%d"), FMath::RandRange(0, 10000));
+	BroadcastPartyMember.SocialId = FString::Printf(TEXT("StubbedSocialId%d"), FMath::RandRange(0, 10000));
+	FPragma_Account_DisplayName DisplayName;
+	DisplayName.DisplayName = FString::Printf(TEXT("Rando%d"), FMath::RandRange(0, 1000));
+	DisplayName.Discriminator = FString::Printf(TEXT("%d"), FMath::RandRange(0, 100));
+	BroadcastPartyMember.DisplayName = DisplayName;
+	BroadcastPartyMember.Ext = {};
+	BroadcastPartyMember.IsLeader = IsLeader;
+	BroadcastPartyMember.IsReady = false;
+	return BroadcastPartyMember;
+}
+
 void UPragmaGameLoopApi::CreateParty(
 	const FPragma_Party_ExtCreateRequest& ExtCreateRequest,
 	const FPragma_Party_ExtPlayerJoinRequest& ExtPlayerJoinRequest,
@@ -143,17 +173,7 @@ void UPragmaGameLoopApi::StubbedCreateParty(
 	BroadcastParty.ExtBroadcastParty = {ExtCreateRequest.GameMode};
 	BroadcastParty.ExtPrivatePlayer = {};
 	BroadcastParty.PreferredGameServerZones = TArray<FString>();
-	FPragma_Party_BroadcastPartyMember BroadcastPartyMember;
-	BroadcastPartyMember.PlayerId = Player()->Id();
-	BroadcastPartyMember.SocialId = Player()->SocialId();
-	FPragma_Account_DisplayName DisplayName;
-	DisplayName.DisplayName = Player()->DisplayName();
-	DisplayName.Discriminator = Player()->Discriminator();
-	BroadcastPartyMember.DisplayName = DisplayName;
-	BroadcastPartyMember.Ext = {};
-	BroadcastPartyMember.IsLeader = true;
-	BroadcastPartyMember.IsReady = false;
-	BroadcastParty.PartyMembers = {BroadcastPartyMember};
+	BroadcastParty.PartyMembers = {StubbedCurrentPlayer(true)};
 
 	PartyProxy->Initialize(MoveTemp(BroadcastParty), 0);
 	SessionService->StubbedSetGameAttribute(EPragma_GameSessionAttribute::PARTY_ID, BroadcastParty.PartyId);
@@ -393,29 +413,22 @@ void UPragmaGameLoopApi::JoinPartyWithInviteCode(
 		return;
 	}
 
-	const auto Request = FPragma_Party_JoinWithInviteCodeV1Request{
-		ExtPlayerJoinRequest,
-		InviteCode,
-		SdkConfig->GetGameClientVersion(),
-		GameServerZoneToPing
-	};
-	PartyServiceRaw->JoinWithInviteCodeV1(Request,
-		UPragmaPartyServiceRaw::FJoinWithInviteCodeV1Delegate::CreateWeakLambda(this,
-			[this, OnComplete](
-			TPragmaResult<FPragma_Party_JoinWithInviteCodeV1Response> Result,
-			const FPragmaMessageMetadata& Metadata)
-			{
-				if (Result.IsFailure())
-				{
-					OnComplete.ExecuteIfBound(TPragmaResult<>::Failure(Result.Error()));
-					return;
-				}
+	StubbedJoinPartyWithInviteCode(InviteCode, OnComplete);
+}
 
-				PartyProxy->Initialize(MoveTemp(Result.Payload().Party), Metadata.SequenceNumber);
-				GAME_LOOP_API_LOG(Log, "Successfully joined party with invite code.");
-				OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
-			}
-		));
+void UPragmaGameLoopApi::StubbedJoinPartyWithInviteCode(const FString& InviteCode, const FOnCompleteDelegate& OnComplete) const
+{
+	FPragma_Party_BroadcastParty BroadcastParty;
+	BroadcastParty.PartyId = FString::Printf(TEXT("StubbedPartyId%d"), FMath::RandRange(0, 10000));
+	BroadcastParty.InviteCode = InviteCode;
+	BroadcastParty.ExtBroadcastParty = {EPragma_Party_GameMode::RANKED};
+	BroadcastParty.ExtPrivatePlayer = {};
+	BroadcastParty.PreferredGameServerZones = TArray<FString>();
+	BroadcastParty.PartyMembers = {StubbedRandomPlayer(true), StubbedCurrentPlayer(false)};
+
+	PartyProxy->Initialize(BroadcastParty, 0);
+	SessionService->StubbedSetGameAttribute(EPragma_GameSessionAttribute::PARTY_ID, BroadcastParty.PartyId);
+	OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
 }
 
 TFuture<TPragmaResult<>> UPragmaGameLoopApi::JoinPartyWithInviteCode(

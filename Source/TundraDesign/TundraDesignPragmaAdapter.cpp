@@ -59,7 +59,7 @@ bool UTundraDesignPragmaAdapter::IsInParty()
 	return PragmaPlayer->GameLoopApi().HasParty();
 }
 
-void UTundraDesignPragmaAdapter::CreateParty(ETundraDesignGameMode GameMode)
+void UTundraDesignPragmaAdapter::CreateParty(const ETundraDesignGameMode& GameMode)
 {
 	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Creating party..."));
 	const FPragma_Party_ExtCreateRequest ExtCreateParty{ToPragmaGameMode(GameMode)};
@@ -80,6 +80,26 @@ void UTundraDesignPragmaAdapter::CreateParty(ETundraDesignGameMode GameMode)
 		}));
 }
 
+void UTundraDesignPragmaAdapter::JoinPartyWithInviteCode(const FString& InviteCode)
+{
+	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Joining party with invite code..."));
+	constexpr FPragma_Party_ExtPlayerJoinRequest ExtJoinParty{};
+	PragmaPlayer->GameLoopApi().JoinPartyWithInviteCode(
+		ExtJoinParty,
+		InviteCode,
+		UPragmaGameLoopApi::FOnCompleteDelegate::CreateWeakLambda(this, [](const TPragmaResult<>& Result)
+		{
+			if (Result.IsSuccessful())
+			{
+				UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Join party with invite code succeeded."));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Join party with invite code failed."));
+			}
+		}));
+}
+
 void UTundraDesignPragmaAdapter::HandlePragmaOnJoinedParty(const UPragmaParty*) const
 {
 	OnJoinedParty.Broadcast();
@@ -90,7 +110,7 @@ void UTundraDesignPragmaAdapter::HandlePragmaOnPartyChanged(const UPragmaParty* 
 	OnPartyChanged.Broadcast(ToTundraDesignParty(PragmaParty));
 }
 
-void UTundraDesignPragmaAdapter::SendPartyInviteByUsername(FString Username)
+void UTundraDesignPragmaAdapter::SendPartyInviteByUsername(const FString& Username)
 {
 	FString DisplayName, Discriminator;
 	Username.Split("#", &DisplayName, &Discriminator);

@@ -50,7 +50,10 @@ public:
 	bool IsInParty();
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
-	void CreateParty(ETundraDesignGameMode GameMode);
+	void CreateParty(const ETundraDesignGameMode& GameMode);
+
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	void JoinPartyWithInviteCode(const FString& InviteCode);
 
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
 	FOnJoinedParty OnJoinedParty;
@@ -61,7 +64,7 @@ public:
 	void HandlePragmaOnPartyChanged(const UPragmaParty* PragmaParty) const;
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
-	void SendPartyInviteByUsername(FString Username);
+	void SendPartyInviteByUsername(const FString& Username);
 
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
 	FOnSentPartyInvitesChanged OnSentPartyInvitesChanged;
