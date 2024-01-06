@@ -131,3 +131,26 @@ struct FTundraDesignSentPartyInvite
 	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
 	FString InviteeUsername;
 };
+
+UENUM(BlueprintType, Category="TundraDesign")
+enum class ETundraDesignLeftPartyReason : uint8
+{
+	Left = 0,
+	Kicked = 1,
+	Disconnected = 2
+};
+
+inline ETundraDesignLeftPartyReason ToTundraDesignLeftPartyReason(const EPragma_Party_RemovalReason RemovalReason)
+{
+	switch (RemovalReason)
+	{
+	case EPragma_Party_RemovalReason::LEFT:
+		return ETundraDesignLeftPartyReason::Left;
+	case EPragma_Party_RemovalReason::KICKED:
+		return ETundraDesignLeftPartyReason::Kicked;
+	case EPragma_Party_RemovalReason::DISCONNECTED:
+		return ETundraDesignLeftPartyReason::Disconnected;
+	default:
+		throw std::invalid_argument("Invalid EPragma_Party_RemovalReason");
+	}
+}

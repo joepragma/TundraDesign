@@ -41,7 +41,7 @@ public:
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSentPartyInvitesChanged, const TArray<FTundraDesignSentPartyInvite>&, SentPartyInvites);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftParty);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLeftParty, ETundraDesignLeftPartyReason, LeftPartyReason);
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
 	FTundraDesignParty GetParty();
@@ -72,7 +72,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
 	FOnLeftParty OnLeftParty;
-	void HandlePragmaOnLeftParty() const;
+	void HandlePragmaOnLeftParty();
+	void HandlePragmaOnRemovedFromParty(const EPragma_Party_RemovalReason RemovalReason);
 
 	/******* DEV CHEAT *******/
 
@@ -81,6 +82,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
 	void DevCheatLastPlayerLeaveParty();
+
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	void DevCheatGetKickedFromParty();
 
 private:
 	Pragma::FPlayerPtr PragmaPlayer;

@@ -1402,6 +1402,12 @@ void UPragmaGameLoopApi::StubbedTriggerPlayerLeftParty(const FString& PlayerId) 
 	PartyProxy->UpdateFrom(BroadcastParty, 0);
 }
 
+void UPragmaGameLoopApi::StubbedTriggerRemovedFromParty(const FString& PartyId, const EPragma_Party_RemovalReason& RemovalReason) const
+{
+	const FPragma_Party_RemovedV1Notification Notification{PartyId, RemovalReason};
+	HandleRemovedFromParty(Notification, FPragmaMessageMetadata{});
+}
+
 ////////////////////////////////////////////////////////////////
 // Private Functions.
 ////////////////////////////////////////////////////////////////

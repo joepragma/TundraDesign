@@ -15,6 +15,7 @@ void UTundraDesignPragmaAdapter::Initialize(const Pragma::FPlayerPtr& InPragmaPl
 	PragmaPlayer->GameLoopApi().OnPartyChanged.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnPartyChanged);
 	PragmaPlayer->GameLoopApi().OnPartyInviteAccepted.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnInviteAccepted);
 	PragmaPlayer->GameLoopApi().OnLeftParty.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnLeftParty);
+	PragmaPlayer->GameLoopApi().OnRemovedFromParty.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnRemovedFromParty);
 }
 
 void UTundraDesignPragmaAdapter::TundraLogin()
@@ -162,9 +163,16 @@ void UTundraDesignPragmaAdapter::LeaveParty()
 		}));
 }
 
-void UTundraDesignPragmaAdapter::HandlePragmaOnLeftParty() const
+void UTundraDesignPragmaAdapter::HandlePragmaOnLeftParty()
 {
-	OnLeftParty.Broadcast();
+	HandlePragmaOnRemovedFromParty(EPragma_Party_RemovalReason::LEFT);
+}
+
+void UTundraDesignPragmaAdapter::HandlePragmaOnRemovedFromParty(const EPragma_Party_RemovalReason RemovalReason)
+{
+	SentPartyInvites.Empty();
+	OnSentPartyInvitesChanged.Broadcast(SentPartyInvites);
+	OnLeftParty.Broadcast(ToTundraDesignLeftPartyReason(RemovalReason));
 }
 
 void UTundraDesignPragmaAdapter::DevCheatAcceptFirstSentPartyInvite()
@@ -194,4 +202,12 @@ void UTundraDesignPragmaAdapter::DevCheatLastPlayerLeaveParty()
 
 	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Triggering last player leave party..."));
 	PragmaPlayer->GameLoopApi().StubbedTriggerPlayerLeftParty(LastPlayer.PlayerId);
+}
+
+void UTundraDesignPragmaAdapter::DevCheatGetKickedFromParty()
+{
+	if (!IsInParty()) return;
+
+	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Triggering get kicked from party..."));
+	PragmaPlayer->GameLoopApi().StubbedTriggerRemovedFromParty(GetParty().Id, EPragma_Party_RemovalReason::KICKED);
 }
