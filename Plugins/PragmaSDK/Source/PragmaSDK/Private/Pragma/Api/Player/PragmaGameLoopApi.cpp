@@ -1370,6 +1370,8 @@ void UPragmaGameLoopApi::StubbedTriggerInviteAccepted(
 	BroadcastPartyMember.IsLeader = false;
 	BroadcastPartyMember.IsReady = false;
 	BroadcastParty.PartyMembers.Add(BroadcastPartyMember);
+
+	PartyProxy->UpdateFrom(BroadcastParty, 0);
 }
 
 void UPragmaGameLoopApi::HandleAddedToGame(

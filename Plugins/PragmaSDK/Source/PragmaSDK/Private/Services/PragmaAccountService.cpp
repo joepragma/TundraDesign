@@ -38,5 +38,5 @@ void UPragmaAccountService::GetPragmaPlayerIdForDisplayName(
 
 void UPragmaAccountService::StubbedGetPragmaPlayerIdForDisplayName(const FGetPragmaPlayerIdDelegate& OnComplete) const
 {
-	OnComplete.ExecuteIfBound(TPragmaResult(FString("FakePragmaPlayerId")));
+	OnComplete.ExecuteIfBound(TPragmaResult(FString::Printf(TEXT("StubbedPlayerId%d"), FMath::RandRange(0, 10000))));
 }

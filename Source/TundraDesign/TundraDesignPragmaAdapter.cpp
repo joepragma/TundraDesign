@@ -180,7 +180,7 @@ void UTundraDesignPragmaAdapter::DevCheatAcceptFirstSentPartyInvite()
 	PragmaPlayer->GameLoopApi().StubbedTriggerInviteAccepted(
 		SentInvite.InviteId,
 		SentInvite.InviteePlayerId,
-		"SomeFakePragmaSocialId",
+		FString::Printf(TEXT("StubbedSocialId%d"), FMath::RandRange(0, 10000)),
 		DisplayName,
 		Discriminator
 	);
