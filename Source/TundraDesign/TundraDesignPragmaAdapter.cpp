@@ -31,17 +31,23 @@ void UTundraDesignPragmaAdapter::TundraLogin()
 			{
 				UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Login succeeded."));
 				OnTundraLogin.Broadcast();
-				FTundraDesignPlayer TundraPlayer;
-				TundraPlayer.PlayerId = PragmaPlayer->Id();
-				TundraPlayer.SocialId = PragmaPlayer->SocialId();
-				TundraPlayer.Username = PragmaPlayer->FullDisplayName();
-				OnTundraPlayerUpdated.Broadcast(TundraPlayer);
+				OnTundraPlayerUpdated.Broadcast(ToTundraDesignPlayer(PragmaPlayer));
 			}
 			else
 			{
 				UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Login failed."));
 			}
 		}));
+}
+
+FTundraDesignPlayer UTundraDesignPragmaAdapter::GetClientPlayer() const
+{
+	return ToTundraDesignPlayer(PragmaPlayer);
+}
+
+bool UTundraDesignPragmaAdapter::IsInParty()
+{
+	return PragmaPlayer->GameLoopApi().HasParty();
 }
 
 FTundraDesignParty UTundraDesignPragmaAdapter::GetParty()
@@ -54,9 +60,14 @@ FTundraDesignParty UTundraDesignPragmaAdapter::GetParty()
 	return ToTundraDesignParty(PragmaPlayer->GameLoopApi().GetParty());
 }
 
-bool UTundraDesignPragmaAdapter::IsInParty()
+FTundraDesignPartyPlayer UTundraDesignPragmaAdapter::GetClientPartyPlayer()
 {
-	return PragmaPlayer->GameLoopApi().HasParty();
+	if (!IsInParty())
+	{
+		return FTundraDesignPartyPlayer{};
+	}
+
+	return ToTundraDesignPartyPlayer(PragmaPlayer->GameLoopApi().GetLocalPartyPlayer());
 }
 
 void UTundraDesignPragmaAdapter::CreateParty(const ETundraDesignGameMode& GameMode)

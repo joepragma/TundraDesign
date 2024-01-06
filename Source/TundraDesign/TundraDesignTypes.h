@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PragmaPlayer.h"
 #include "Dto/PragmaPartyRpcExtDto.h"
 #include "Services/Party/PragmaParty.h"
 #include "Services/Party/PragmaPartyPlayer.h"
@@ -19,6 +20,15 @@ struct FTundraDesignPlayer
 	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
 	FString Username;
 };
+
+inline FTundraDesignPlayer ToTundraDesignPlayer(const Pragma::FPlayerPtr& PragmaPlayer)
+{
+	FTundraDesignPlayer TundraPlayer;
+	TundraPlayer.PlayerId = PragmaPlayer->Id();
+	TundraPlayer.SocialId = PragmaPlayer->SocialId();
+	TundraPlayer.Username = PragmaPlayer->FullDisplayName();
+	return TundraPlayer;
+}
 
 UENUM(BlueprintType, Category="TundraDesign")
 enum class ETundraDesignGameMode : uint8

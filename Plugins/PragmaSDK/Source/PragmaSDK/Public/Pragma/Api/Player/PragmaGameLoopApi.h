@@ -512,8 +512,8 @@ private:
 	////////////////////////////////////////////////////////////////
 
 	FPragma_Party_BroadcastParty StubbedConvertToBroadcastParty(const UPragmaParty* PragmaParty) const;
-	FPragma_Party_BroadcastPartyMember StubbedCurrentPlayer(const bool IsLeader) const;
-	FPragma_Party_BroadcastPartyMember StubbedRandomPlayer(const bool IsLeader) const;
+	FPragma_Party_BroadcastPartyMember StubbedClientPartyPlayer(const bool IsLeader) const;
+	FPragma_Party_BroadcastPartyMember StubbedRandomPartyPlayer(const bool IsLeader) const;
 	void StubbedCreateParty(const FPragma_Party_ExtCreateRequest& ExtCreateRequest, const FOnCompleteDelegate& OnComplete) const;
 	void StubbedLeaveParty(const FOnCompleteDelegate& OnComplete) const;
 	void StubbedSendPartyInvite(const FOnInviteSentDelegate& OnInviteSent) const;

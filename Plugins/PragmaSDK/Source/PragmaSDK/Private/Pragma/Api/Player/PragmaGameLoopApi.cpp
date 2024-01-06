@@ -116,7 +116,7 @@ FPragma_Party_BroadcastParty UPragmaGameLoopApi::StubbedConvertToBroadcastParty(
 	return BroadcastParty;
 }
 
-FPragma_Party_BroadcastPartyMember UPragmaGameLoopApi::StubbedCurrentPlayer(const bool IsLeader) const
+FPragma_Party_BroadcastPartyMember UPragmaGameLoopApi::StubbedClientPartyPlayer(const bool IsLeader) const
 {
 	FPragma_Party_BroadcastPartyMember BroadcastPartyMember;
 	BroadcastPartyMember.PlayerId = Player()->Id();
@@ -131,7 +131,7 @@ FPragma_Party_BroadcastPartyMember UPragmaGameLoopApi::StubbedCurrentPlayer(cons
 	return BroadcastPartyMember;
 }
 
-FPragma_Party_BroadcastPartyMember UPragmaGameLoopApi::StubbedRandomPlayer(const bool IsLeader) const
+FPragma_Party_BroadcastPartyMember UPragmaGameLoopApi::StubbedRandomPartyPlayer(const bool IsLeader) const
 {
 	FPragma_Party_BroadcastPartyMember BroadcastPartyMember;
 	BroadcastPartyMember.PlayerId = FString::Printf(TEXT("StubbedPlayerId%d"), FMath::RandRange(0, 10000));
@@ -173,7 +173,7 @@ void UPragmaGameLoopApi::StubbedCreateParty(
 	BroadcastParty.ExtBroadcastParty = {ExtCreateRequest.GameMode};
 	BroadcastParty.ExtPrivatePlayer = {};
 	BroadcastParty.PreferredGameServerZones = TArray<FString>();
-	BroadcastParty.PartyMembers = {StubbedCurrentPlayer(true)};
+	BroadcastParty.PartyMembers = {StubbedClientPartyPlayer(true)};
 
 	PartyProxy->Initialize(MoveTemp(BroadcastParty), 0);
 	SessionService->StubbedSetGameAttribute(EPragma_GameSessionAttribute::PARTY_ID, BroadcastParty.PartyId);
@@ -424,7 +424,7 @@ void UPragmaGameLoopApi::StubbedJoinPartyWithInviteCode(const FString& InviteCod
 	BroadcastParty.ExtBroadcastParty = {EPragma_Party_GameMode::RANKED};
 	BroadcastParty.ExtPrivatePlayer = {};
 	BroadcastParty.PreferredGameServerZones = TArray<FString>();
-	BroadcastParty.PartyMembers = {StubbedRandomPlayer(true), StubbedCurrentPlayer(false)};
+	BroadcastParty.PartyMembers = {StubbedRandomPartyPlayer(true), StubbedClientPartyPlayer(false)};
 
 	PartyProxy->Initialize(BroadcastParty, 0);
 	SessionService->StubbedSetGameAttribute(EPragma_GameSessionAttribute::PARTY_ID, BroadcastParty.PartyId);

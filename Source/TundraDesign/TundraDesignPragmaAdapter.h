@@ -27,6 +27,9 @@ public:
 
 	void TundraLogin();
 
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	FTundraDesignPlayer GetClientPlayer() const;
+
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
 	FOnTundraLogin OnTundraLogin;
 
@@ -44,10 +47,13 @@ public:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLeftParty, ETundraDesignLeftPartyReason, LeftPartyReason);
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	bool IsInParty();
+
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
 	FTundraDesignParty GetParty();
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
-	bool IsInParty();
+	FTundraDesignPartyPlayer GetClientPartyPlayer();
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
 	void CreateParty(const ETundraDesignGameMode& GameMode);
