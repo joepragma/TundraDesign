@@ -169,7 +169,7 @@ void UTundraDesignPragmaAdapter::HandlePragmaOnLeftParty() const
 
 void UTundraDesignPragmaAdapter::DevCheatAcceptFirstSentPartyInvite()
 {
-	if (SentPartyInvites.Num() == 0) return;
+	if (!IsInParty() || SentPartyInvites.Num() == 0) return;
 
 	const FTundraDesignSentPartyInvite SentInvite = SentPartyInvites[0];
 
@@ -184,4 +184,14 @@ void UTundraDesignPragmaAdapter::DevCheatAcceptFirstSentPartyInvite()
 		DisplayName,
 		Discriminator
 	);
+}
+
+void UTundraDesignPragmaAdapter::DevCheatLastPlayerLeaveParty()
+{
+	if (!IsInParty() || GetParty().Players.Num() <= 1) return;
+
+	const FTundraDesignPartyPlayer LastPlayer = GetParty().Players.Last();
+
+	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Triggering last player leave party..."));
+	PragmaPlayer->GameLoopApi().StubbedTriggerPlayerLeftParty(LastPlayer.PlayerId);
 }

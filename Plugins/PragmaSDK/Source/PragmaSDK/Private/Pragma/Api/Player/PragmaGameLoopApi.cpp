@@ -1347,6 +1347,22 @@ void UPragmaGameLoopApi::HandleInviteResponse(
 	}
 }
 
+void UPragmaGameLoopApi::HandleAddedToGame(
+		const FPragma_GameInstance_AddedToGameV1Notification Notification,
+		const FPragmaMessageMetadata&) const
+{
+	OnAddedToGame.Broadcast(Notification.GameInstanceId, Notification.Ext);
+}
+
+void UPragmaGameLoopApi::HandleDisconnected()
+{
+	HardResetAllState();
+}
+
+////////////////////////////////////////////////////////////////
+// Public Stubs
+////////////////////////////////////////////////////////////////
+
 void UPragmaGameLoopApi::StubbedTriggerInviteAccepted(
 	const FString& InviteId,
 	const FString& PlayerId,
@@ -1374,16 +1390,16 @@ void UPragmaGameLoopApi::StubbedTriggerInviteAccepted(
 	PartyProxy->UpdateFrom(BroadcastParty, 0);
 }
 
-void UPragmaGameLoopApi::HandleAddedToGame(
-		const FPragma_GameInstance_AddedToGameV1Notification Notification,
-		const FPragmaMessageMetadata&) const
+void UPragmaGameLoopApi::StubbedTriggerPlayerLeftParty(const FString& PlayerId) const
 {
-	OnAddedToGame.Broadcast(Notification.GameInstanceId, Notification.Ext);
-}
+	auto BroadcastParty = StubbedConvertToBroadcastParty(PartyProxy->GetParty());
 
-void UPragmaGameLoopApi::HandleDisconnected()
-{
-	HardResetAllState();
+	BroadcastParty.PartyMembers.RemoveAll([PlayerId](const FPragma_Party_BroadcastPartyMember& Item)
+	{
+		return Item.PlayerId == PlayerId;
+	});
+
+	PartyProxy->UpdateFrom(BroadcastParty, 0);
 }
 
 ////////////////////////////////////////////////////////////////

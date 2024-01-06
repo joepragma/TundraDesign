@@ -486,6 +486,7 @@ public:
 	////////////////////////////////////////////////////////////////
 
 	void StubbedTriggerInviteAccepted(const FString& InviteId, const FString& PlayerId, const FString& SocialId, const FString& DisplayName, const FString& Discriminator) const;
+	void StubbedTriggerPlayerLeftParty(const FString& PlayerId) const;
 
 private:
 	UPROPERTY()

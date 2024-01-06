@@ -79,6 +79,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
 	void DevCheatAcceptFirstSentPartyInvite();
 
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	void DevCheatLastPlayerLeaveParty();
+
 private:
 	Pragma::FPlayerPtr PragmaPlayer;
 
