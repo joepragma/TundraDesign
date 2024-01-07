@@ -13,6 +13,7 @@ void UTundraDesignPragmaAdapter::Initialize(const Pragma::FPlayerPtr& InPragmaPl
 
 	PragmaPlayer->GameLoopApi().OnJoinedParty.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnJoinedParty);
 	PragmaPlayer->GameLoopApi().OnPartyChanged.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnPartyChanged);
+	PragmaPlayer->GameLoopApi().OnPartyInviteReceived.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnPartyInviteReceived);
 	PragmaPlayer->GameLoopApi().OnPartyInviteAccepted.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnInviteAccepted);
 	PragmaPlayer->GameLoopApi().OnLeftParty.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnLeftParty);
 	PragmaPlayer->GameLoopApi().OnRemovedFromParty.AddUObject(this, &UTundraDesignPragmaAdapter::HandlePragmaOnRemovedFromParty);
@@ -40,7 +41,7 @@ void UTundraDesignPragmaAdapter::TundraLogin()
 		}));
 }
 
-FTundraDesignPlayer UTundraDesignPragmaAdapter::GetClientPlayer() const
+FTundraDesignPlayer UTundraDesignPragmaAdapter::GetClientTundraPlayer() const
 {
 	return ToTundraDesignPlayer(PragmaPlayer);
 }
@@ -107,6 +108,32 @@ void UTundraDesignPragmaAdapter::JoinPartyWithInviteCode(const FString& InviteCo
 			else
 			{
 				UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Join party with invite code failed."));
+			}
+		}));
+}
+
+void UTundraDesignPragmaAdapter::HandlePragmaOnPartyInviteReceived(const FPragmaPartyInvite& PragmaPartyInvite) const
+{
+	OnPartyInviteReceived.Broadcast(ToTundraDesignPartyInvite(PragmaPartyInvite));
+}
+
+void UTundraDesignPragmaAdapter::ResponseToPartyInvite(const FString& InviteId, const bool Accept)
+{
+	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Responding to party invite..."));
+	constexpr FPragma_Party_ExtPlayerJoinRequest ExtJoinParty{};
+	PragmaPlayer->GameLoopApi().RespondToPartyInvite(
+		ExtJoinParty,
+		InviteId,
+		Accept,
+		UPragmaGameLoopApi::FOnCompleteDelegate::CreateWeakLambda(this, [](const TPragmaResult<>& Result)
+		{
+			if (Result.IsSuccessful())
+			{
+				UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Respond to invite succeeded."));
+			}
+			else
+			{
+				UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Respond to invite failed."));
 			}
 		}));
 }
@@ -199,11 +226,11 @@ void UTundraDesignPragmaAdapter::HandlePragmaOnLeftParty()
 	HandlePragmaOnRemovedFromParty(EPragma_Party_RemovalReason::LEFT);
 }
 
-void UTundraDesignPragmaAdapter::HandlePragmaOnRemovedFromParty(const EPragma_Party_RemovalReason RemovalReason)
+void UTundraDesignPragmaAdapter::HandlePragmaOnRemovedFromParty(const EPragma_Party_RemovalReason PragmaRemovalReason)
 {
 	SentPartyInvites.Empty();
 	OnSentPartyInvitesChanged.Broadcast(SentPartyInvites);
-	OnLeftParty.Broadcast(ToTundraDesignLeftPartyReason(RemovalReason));
+	OnLeftParty.Broadcast(ToTundraDesignLeftPartyReason(PragmaRemovalReason));
 }
 
 void UTundraDesignPragmaAdapter::DevCheatAcceptFirstSentPartyInvite()
@@ -241,4 +268,10 @@ void UTundraDesignPragmaAdapter::DevCheatGetKickedFromParty()
 
 	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Triggering get kicked from party..."));
 	PragmaPlayer->GameLoopApi().StubbedTriggerRemovedFromParty(GetParty().Id, EPragma_Party_RemovalReason::KICKED);
+}
+
+void UTundraDesignPragmaAdapter::DevCheatReceiveInviteToParty()
+{
+	UE_LOG(LogTemp, Display, TEXT("PragmaAdapter - Triggering receive invite to party..."));
+	PragmaPlayer->GameLoopApi().StubbedTriggerInviteReceived();
 }

@@ -28,7 +28,7 @@ public:
 	void TundraLogin();
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
-	FTundraDesignPlayer GetClientPlayer() const;
+	FTundraDesignPlayer GetClientTundraPlayer() const;
 
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
 	FOnTundraLogin OnTundraLogin;
@@ -38,9 +38,11 @@ public:
 
 	/******* PARTY *******/
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPartyInviteReceived, FTundraDesignPartyInvite, PartyInvite);
+
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnJoinedParty);
 
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPartyChanged, FTundraDesignParty, TundraParty);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPartyChanged, FTundraDesignParty, Party);
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnSentPartyInvitesChanged, const TArray<FTundraDesignSentPartyInvite>&, SentPartyInvites);
 
@@ -60,6 +62,13 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
 	void JoinPartyWithInviteCode(const FString& InviteCode);
+
+	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
+	FOnPartyInviteReceived OnPartyInviteReceived;
+	void HandlePragmaOnPartyInviteReceived(const FPragmaPartyInvite& PragmaPartyInvite) const;
+
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	void ResponseToPartyInvite(const FString& InviteId, const bool Accept);
 
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
 	FOnJoinedParty OnJoinedParty;
@@ -82,7 +91,7 @@ public:
 	UPROPERTY(BlueprintAssignable, Category="TundraDesign")
 	FOnLeftParty OnLeftParty;
 	void HandlePragmaOnLeftParty();
-	void HandlePragmaOnRemovedFromParty(const EPragma_Party_RemovalReason RemovalReason);
+	void HandlePragmaOnRemovedFromParty(const EPragma_Party_RemovalReason PragmaRemovalReason);
 
 	/******* DEV CHEAT *******/
 
@@ -94,6 +103,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="TundraDesign")
 	void DevCheatGetKickedFromParty();
+
+	UFUNCTION(BlueprintCallable, Category="TundraDesign")
+	void DevCheatReceiveInviteToParty();
 
 private:
 	Pragma::FPlayerPtr PragmaPlayer;

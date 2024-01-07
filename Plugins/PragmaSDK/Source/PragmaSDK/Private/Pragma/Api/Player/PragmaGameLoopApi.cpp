@@ -321,39 +321,26 @@ void UPragmaGameLoopApi::RespondToPartyInvite(
 		return;
 	}
 
-	auto Request = FPragma_Party_RespondToInviteV1Request{
-		ExtPlayerJoinRequest,
-		InviteId,
-		Accepted,
-		SdkConfig->GetGameClientVersion(),
-		GameServerZoneToPing
-	};
-	PartyServiceRaw->RespondToInviteV1(Request,
-		UPragmaPartyServiceRaw::FRespondToInviteV1Delegate::CreateWeakLambda(this,
-			[this, InviteId = Request.InviteId, Accepted, OnComplete](
-			TPragmaResult<FPragma_Party_RespondToInviteV1Response> Result,
-			const FPragmaMessageMetadata& Metadata)
-			{
-				if (Result.IsFailure())
-				{
-					OnComplete.ExecuteIfBound(TPragmaResult<>::Failure(Result.Error()));
-					return;
-				}
+	StubbedRespondToInvite(InviteId, Accepted, OnComplete);
+}
 
-				if (Accepted)
-				{
-					PartyProxy->Initialize(MoveTemp(Result.Payload().Party), Metadata.SequenceNumber);
-					GAME_LOOP_API_LOG(Log, "Successfully accepted invite.");
-				}
-				else
-				{
-					GAME_LOOP_API_LOG(Log, "Successfully rejected invite.");
-				}
+void UPragmaGameLoopApi::StubbedRespondToInvite(const FString& InviteId, const bool Accepted, const FOnCompleteDelegate& OnComplete)
+{
+	if (Accepted)
+	{
+		FPragma_Party_BroadcastParty BroadcastParty;
+		BroadcastParty.PartyId = FString::Printf(TEXT("StubbedPartyId%d"), FMath::RandRange(0, 10000));
+		BroadcastParty.InviteCode = "8NKP4Z";
+		BroadcastParty.ExtBroadcastParty = {EPragma_Party_GameMode::NORMAL};
+		BroadcastParty.ExtPrivatePlayer = {};
+		BroadcastParty.PreferredGameServerZones = TArray<FString>();
+		BroadcastParty.PartyMembers = {(StubbedRandomPartyPlayer(true)), StubbedClientPartyPlayer(false)};
+		PartyProxy->Initialize(MoveTemp(BroadcastParty), 0);
+		SessionService->StubbedSetGameAttribute(EPragma_GameSessionAttribute::PARTY_ID, BroadcastParty.PartyId);
+	}
 
-				RemoveInviteById(InviteId);
-				OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
-			}
-		));
+	RemoveInviteById(InviteId);
+	OnComplete.ExecuteIfBound(TPragmaResult<>::Success());
 }
 
 TFuture<TPragmaResult<>> UPragmaGameLoopApi::RespondToPartyInvite(
@@ -1419,6 +1406,15 @@ void UPragmaGameLoopApi::StubbedTriggerRemovedFromParty(const FString& PartyId, 
 {
 	const FPragma_Party_RemovedV1Notification Notification{PartyId, RemovalReason};
 	HandleRemovedFromParty(Notification, FPragmaMessageMetadata{});
+}
+
+void UPragmaGameLoopApi::StubbedTriggerInviteReceived()
+{
+	const auto RandomPlayer = StubbedRandomPartyPlayer(true);
+	const FPragma_Party_InviterInfo InviterInfo{RandomPlayer.PlayerId, RandomPlayer.DisplayName};
+	const FString InviteId = FString::Printf(TEXT("StubbedInviteId%d"), FMath::RandRange(0, 10000));
+	const FPragma_Party_InviteReceivedV1Notification Notification{InviteId, InviterInfo};
+	HandleInviteReceived(Notification, FPragmaMessageMetadata{});
 }
 
 ////////////////////////////////////////////////////////////////

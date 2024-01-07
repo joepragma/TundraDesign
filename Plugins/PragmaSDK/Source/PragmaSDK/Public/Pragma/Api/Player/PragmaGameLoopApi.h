@@ -488,6 +488,7 @@ public:
 	void StubbedTriggerInviteAccepted(const FString& InviteId, const FString& PlayerId, const FString& SocialId, const FString& DisplayName, const FString& Discriminator) const;
 	void StubbedTriggerPlayerLeftParty(const FString& PlayerId) const;
 	void StubbedTriggerRemovedFromParty(const FString& PartyId, const EPragma_Party_RemovalReason& RemovalReason) const;
+	void StubbedTriggerInviteReceived();
 
 private:
 	UPROPERTY()
@@ -518,6 +519,7 @@ private:
 	void StubbedLeaveParty(const FOnCompleteDelegate& OnComplete) const;
 	void StubbedSendPartyInvite(const FOnInviteSentDelegate& OnInviteSent) const;
 	void StubbedJoinPartyWithInviteCode(const FString& InviteCode, const FOnCompleteDelegate& OnComplete) const;
+	void StubbedRespondToInvite(const FString& InviteId, const bool Accepted, const FOnCompleteDelegate& OnComplete);
 	
 	////////////////////////////////////////////////////////////////
 	// Notification Handlers

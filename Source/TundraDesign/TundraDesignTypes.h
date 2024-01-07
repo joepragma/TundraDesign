@@ -37,9 +37,9 @@ enum class ETundraDesignGameMode : uint8
 	Ranked = 1
 };
 
-inline ETundraDesignGameMode ToTundraDesignGameMode(EPragma_Party_GameMode GameMode)
+inline ETundraDesignGameMode ToTundraDesignGameMode(const EPragma_Party_GameMode PragmaGameMode)
 {
-	switch (GameMode)
+	switch (PragmaGameMode)
 	{
 	case EPragma_Party_GameMode::NORMAL:
 		return ETundraDesignGameMode::Normal;
@@ -50,9 +50,9 @@ inline ETundraDesignGameMode ToTundraDesignGameMode(EPragma_Party_GameMode GameM
 	}
 }
 
-inline EPragma_Party_GameMode ToPragmaGameMode(ETundraDesignGameMode GameMode)
+inline EPragma_Party_GameMode ToPragmaGameMode(const ETundraDesignGameMode TundraGameMode)
 {
-	switch (GameMode)
+	switch (TundraGameMode)
 	{
 	case ETundraDesignGameMode::Normal:
 		return EPragma_Party_GameMode::NORMAL;
@@ -61,6 +61,26 @@ inline EPragma_Party_GameMode ToPragmaGameMode(ETundraDesignGameMode GameMode)
 	default:
 		return EPragma_Party_GameMode::GAME_MODE_UNSPECIFIED;
 	}
+}
+
+USTRUCT(BlueprintType, Category="TundraDesign")
+struct FTundraDesignPartyInvite
+{
+	GENERATED_BODY()
+
+	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
+	FString Id;
+
+	UPROPERTY(BlueprintReadOnly, Category="TundraDesign")
+	FString InviterId;
+};
+
+inline FTundraDesignPartyInvite ToTundraDesignPartyInvite(const FPragmaPartyInvite& PragmaPartyInvite)
+{
+	FTundraDesignPartyInvite TundraPartyInvite;
+	TundraPartyInvite.Id = PragmaPartyInvite.GetInviteId();
+	TundraPartyInvite.InviterId = PragmaPartyInvite.GetInviterId();
+	return TundraPartyInvite;
 }
 
 USTRUCT(BlueprintType, Category="TundraDesign")
@@ -84,15 +104,15 @@ struct FTundraDesignPartyPlayer
 	bool IsReady;
 };
 
-inline FTundraDesignPartyPlayer ToTundraDesignPartyPlayer(const UPragmaPartyPlayer* PartyPlayer)
+inline FTundraDesignPartyPlayer ToTundraDesignPartyPlayer(const UPragmaPartyPlayer* PragmaPartyPlayer)
 {
 	FTundraDesignPartyPlayer TundraPartyPlayer;
-	TundraPartyPlayer.PlayerId = PartyPlayer->GetPlayerId();
-	TundraPartyPlayer.SocialId = PartyPlayer->GetSocialId();
-	TundraPartyPlayer.Username = FString::Printf(TEXT("%s#%s"), *PartyPlayer->GetDisplayName().DisplayName,
-	                                             *PartyPlayer->GetDisplayName().Discriminator);
-	TundraPartyPlayer.IsLeader = PartyPlayer->IsLeader();
-	TundraPartyPlayer.IsReady = PartyPlayer->IsReady();
+	TundraPartyPlayer.PlayerId = PragmaPartyPlayer->GetPlayerId();
+	TundraPartyPlayer.SocialId = PragmaPartyPlayer->GetSocialId();
+	TundraPartyPlayer.Username = FString::Printf(TEXT("%s#%s"), *PragmaPartyPlayer->GetDisplayName().DisplayName,
+	                                             *PragmaPartyPlayer->GetDisplayName().Discriminator);
+	TundraPartyPlayer.IsLeader = PragmaPartyPlayer->IsLeader();
+	TundraPartyPlayer.IsReady = PragmaPartyPlayer->IsReady();
 	return TundraPartyPlayer;
 }
 
@@ -114,13 +134,13 @@ struct FTundraDesignParty
 	TArray<FTundraDesignPartyPlayer> Players;
 };
 
-inline FTundraDesignParty ToTundraDesignParty(const UPragmaParty* Party)
+inline FTundraDesignParty ToTundraDesignParty(const UPragmaParty* PragmaParty)
 {
 	FTundraDesignParty TundraParty;
-	TundraParty.Id = Party->GetId();
-	TundraParty.InviteCode = Party->GetInviteCode();
-	TundraParty.GameMode = ToTundraDesignGameMode(Party->GetExt().GameMode);
-	for (const auto* Player : Party->GetPlayers())
+	TundraParty.Id = PragmaParty->GetId();
+	TundraParty.InviteCode = PragmaParty->GetInviteCode();
+	TundraParty.GameMode = ToTundraDesignGameMode(PragmaParty->GetExt().GameMode);
+	for (const auto* Player : PragmaParty->GetPlayers())
 	{
 		TundraParty.Players.Add(ToTundraDesignPartyPlayer(Player));
 	}
@@ -150,9 +170,9 @@ enum class ETundraDesignLeftPartyReason : uint8
 	Disconnected = 2
 };
 
-inline ETundraDesignLeftPartyReason ToTundraDesignLeftPartyReason(const EPragma_Party_RemovalReason RemovalReason)
+inline ETundraDesignLeftPartyReason ToTundraDesignLeftPartyReason(const EPragma_Party_RemovalReason PragmaRemovalReason)
 {
-	switch (RemovalReason)
+	switch (PragmaRemovalReason)
 	{
 	case EPragma_Party_RemovalReason::LEFT:
 		return ETundraDesignLeftPartyReason::Left;
